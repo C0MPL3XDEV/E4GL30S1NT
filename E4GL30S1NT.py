@@ -50,7 +50,7 @@ logo = f"""{b}
        ====UU====UU====             '----------------------------' 
            '//||\\`
              ''``
-  {d}Simple Information Gathering Toolkit{w}    
+  {d}Simple Information Gathering Tool{w}    
   {d}Author by {w}{r}@C0MPL3XDEV{w} 
 """
 
