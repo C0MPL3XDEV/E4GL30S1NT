@@ -4,7 +4,7 @@ g="\033[1;32m"
 r="\033[1;31m"
 b="\033[1;34m"
 w="\033[0m"
-echo -e "$b"">""$w"" E4GL30SINT - Simple information gathering toolkit"
+echo -e "$b"">""$w"" E4GL30SINT - Simple information gathering tool"
 echo -e "$b"">""$w"" prepare for installing dependencies ..."
 sleep 3
 echo -e "$b"">""$w"" installing package: ""$g""libxml2""$w"
