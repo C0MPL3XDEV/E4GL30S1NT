@@ -1,5 +1,7 @@
 # E4GL30S1NT
 
+<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/Daco_4872325.png">
+
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 <img title="E4GL30S1NT" src="https://img.shields.io/badge/CODENAME%20-E4GL30S1NT-E4GL30S1NT?colorA=grey&colorB=green&style=for-the-badge"> <img title="E4GL30S1NT" src="https://img.shields.io/badge/VERSION%20-1.0-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> 
  
