@@ -1,6 +1,9 @@
-# E4GL30S1NT
+<h1 align="center">E4GL30S1NT</h1>
 
 <img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/Daco_4872325.png">
+<p align="center">
+  <a href="https://discord.gg/Vy8C724XWV">
+    <img src="https://discordapp.com/api/guilds/437716353584070677/widget.png?style=shield" alt="Discord Server">
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 <img title="E4GL30S1NT" src="https://img.shields.io/badge/CODENAME%20-E4GL30S1NT-E4GL30S1NT?colorA=grey&colorB=green&style=for-the-badge"> <img title="E4GL30S1NT" src="https://img.shields.io/badge/VERSION%20-1.0-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> 
