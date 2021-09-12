@@ -1,6 +1,6 @@
 <h1 align="center">E4GL30S1NT</h1>
 
-<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/Daco_4872325.png">
+<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/imageonline-co-roundcorner.png">
 <p align="center">
   <a href="https://discord.gg/Vy8C724XWV">
     <img src="https://discordapp.com/api/guilds/437716353584070677/widget.png?style=shield" alt="Discord Server">
