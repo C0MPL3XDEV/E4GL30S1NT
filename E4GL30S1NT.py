@@ -590,11 +590,11 @@ if __name__ == "__main__":
     if len(arg) == 1: menu()
     elif len(arg) == 2:
         if arg[1] in ("update"):
-            if which("termux-setup-storage"): path = "$PREFIX/bin/sigit"
+            if which("termux-setup-storage"): path = "$PREFIX/bin/E4GL30S1NT"
             else:
-                if os.path.isdir("/usr/local/bin/"): path = "/usr/local/bin/sigit"
-                else: path = "/usr/bin/sigit"
-            os.system(f"wget https://raw.githubusercontent.com/termuxhackers-id/SIGIT/main/sigit.py -O {path} && chmod +x {path}")
+                if os.path.isdir("/usr/local/bin/"): path = "/usr/local/bin/E4GL30S1NT"
+                else: path = "/usr/bin/E4GL30S1NT"
+            os.system(f"wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py -O {path} && chmod +x {path}")
             print(f"{b}>{w} wrapper script have been updated")
         else: exit(r+"* no command found for: "+str(arg[1:]).replace("[","").replace("]",""))
     else: exit(r+"* no command found for: "+str(arg[1:]).replace("[","").replace("]",""))                   
