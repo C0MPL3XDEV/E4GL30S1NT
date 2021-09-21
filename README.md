@@ -6,10 +6,12 @@
     <img src="https://discordapp.com/api/guilds/437716353584070677/widget.png?style=shield" alt="Discord Server">
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-<img title="E4GL30S1NT" src="https://img.shields.io/badge/CODENAME%20-E4GL30S1NT-E4GL30S1NT?colorA=grey&colorB=green&style=for-the-badge"> <img title="E4GL30S1NT" src="https://img.shields.io/badge/VERSION%20-1.0-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> 
- 
+<img title="E4GL30S1NT" src="https://img.shields.io/badge/CODENAME%20-E4GL30S1NT-E4GL30S1NT?colorA=grey&colorB=green&style=for-the-badge"> <img title="E4GL30S1NT" src="https://img.shields.io/badge/VERSION%20-1.1-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white) </a>
+<a href=https://github.com/C0MPL3XDEV>
+    <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white"/>
 
-<img src="https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/image/Screenshot_11.png">
+
+<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/Screenshot_2.png">
 
 ### Features
 - ```userrecon```    - username reconnaissance
@@ -24,6 +26,9 @@
 - ```dnsfinder``` - find host domain name system
 - ```riplookup``` - reverse ip lookup
 - ```iplocation``` - ip to location tracker
+- ```Bitly Bypass``` - Bypass all bitly urls 
+- ```Github Lookup``` -  Dump GitHub information 
+- ```TempMail``` - Generate a Temp Mail and Mail Box  
 
 - Installation on linux
 ```bash
