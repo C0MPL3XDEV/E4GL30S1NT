@@ -31,7 +31,7 @@
 - ```TempMail``` - Generate a Temp Mail and Mail Box 
 
 ### USE:
-  - For Put or Modify API KEY Type ```python3 E4GL30S1NT.py configs``` or edit configs.json
+  - For Put or Modify API KEY Type ```python3 E4GL30S1NT.py configs``` or edit config.json
   - For use ```phoneinfo``` to use phoneinfo you need a Veriphone API key, if you don't have this key you can use this test key to test the tool: KEY: ```47703D994B174BACBDC5AD734CC381B4```
 
 - Installation on linux
