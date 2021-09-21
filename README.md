@@ -32,8 +32,8 @@
 
 ### USE:
   - For Put or Modify API KEY Type ```python3 E4GL30S1NT.py configs``` or edit configs.json
+  - For use ```phoneinfo``` to use phoneinfo you need a Veriphone API key, if you don't have this key you can use this test key to test the tool: KEY: ```47703D994B174BACBDC5AD734CC381B4```
 
-  
 - Installation on linux
 ```bash
 apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/kalinstall.sh && bash kalinstall.sh
