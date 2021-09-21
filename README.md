@@ -39,5 +39,5 @@ pkg install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT
 - linux  : ```rm -rf /usr/local/bin/sigit```
 
 ### Credits
-Copyright © 2021 by <a href="https://www.instagram.com/c0mpl3xdev/">@C0MPL3XDEV</a>
+Copyright © 2021 by <a href="https://www.instagram.com/c0mpl3xdev/">@C0MPL3XDEV</a> <a href="https://github.com/JProgrammer-it">@JProgrammer-it</a> 
 
