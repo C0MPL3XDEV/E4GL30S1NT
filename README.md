@@ -44,8 +44,8 @@ apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30
 pkg install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/install.sh && bash install.sh
 ```
 - Uninstallation
-- termux: ```rm -rf $PREFIX/bin/sigit```
-- linux  : ```rm -rf /usr/local/bin/sigit```
+- termux: ```rm -rf $PREFIX/bin/E4GL30S1NT```
+- linux  : ```rm -rf /usr/local/bin/E4GL30S1NT```
 
 ### Credits
 Copyright © 2021 by <a href="https://www.instagram.com/c0mpl3xdev/">@C0MPL3XDEV</a> <a href="https://github.com/JProgrammer-it">@JProgrammer-it</a> 
