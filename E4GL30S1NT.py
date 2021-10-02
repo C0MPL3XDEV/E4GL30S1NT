@@ -11,7 +11,6 @@ import json
 import requests
 import textwrap
 import socket
-from googlesearch import search
 from lxml.html import fromstring
 from getpass import getpass
 from shutil import which
