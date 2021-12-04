@@ -40,7 +40,7 @@
 
 - Installation on linux
 ```bash
-apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/kalinstall.sh && bash kalinstall.sh
+apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/linuxinstall.sh && bash linuxinstall.sh
 ```
 
 - Installation on termux
