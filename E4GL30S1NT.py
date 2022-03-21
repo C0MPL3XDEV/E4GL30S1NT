@@ -64,8 +64,8 @@ logo = f"""{b}
     / /     \(  )/    -----           
    //////   ' \/ `   ---            ┏───────────────────────────────┓
   //// / // :    : ---              │     WELCOME TO E4GL30S1NT     │
- // /   /  /`    '--                │  https://devc0mpl3x.web.app/   │
-//          //..\\                   │ https://JProgrammerIt.web.app │
+ // /   /  /`    '--                │  https://devc0mpl3x.web.app/  │
+//          //..\\                  │ https://JProgrammerIt.web.app │
        ====UU====UU====             └───────────────────────────────┘
            '//||\\`
              ''``
