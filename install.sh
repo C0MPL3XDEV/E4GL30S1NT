@@ -18,7 +18,7 @@ pip3 install wheel lxml
 echo -e "$b"">""$w"" installing modules: ""$g""requests""$w"
 pip3 install requests
 echo -e "$b"">""$w"" installing modules: ""$g""BeautifulSoup""$w"
-pip3 install BeautifulSoup
+pip install beautifulsoup4
 echo -e "$b"">""$w"" installing modules: ""$g""tabulate""$w"
 pip3 install tabulate
 echo -e "$b"">""$w"" successfully installing dependencies"
