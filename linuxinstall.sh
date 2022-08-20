@@ -8,11 +8,11 @@ echo -e "$b"">""$w"" E4GL30SINT - Simple information gathering toolkit"
 echo -e "$b"">""$w"" prepare for installing dependencies ..."
 sleep 3
 echo -e "$b"">""$w"" installing package: ""$g""libxml2""$w"
-pkg install libxml2 -y
+sudo apt install libxml2 -y
 echo -e "$b"">""$w"" installing pacakge: ""$g""libxslt""$w"
-pkg install libxslt -y
+sudo apt install libxslt -y
 echo -e "$b"">""$w"" installing pacakge: ""$g""python3""$w"
-pkg install python -y
+sudo apt install python -y
 echo -e "$b"">""$w"" installing modules: ""$g""lxml""$w"
 pip3 install wheel lxml
 echo -e "$b"">""$w"" installing modules: ""$g""requests""$w"
