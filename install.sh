@@ -21,6 +21,8 @@ echo -e "$b"">""$w"" installing modules: ""$g""BeautifulSoup""$w"
 pip install beautifulsoup4
 echo -e "$b"">""$w"" installing modules: ""$g""tabulate""$w"
 pip3 install tabulate
+echo -e "$b"">""$w"" installing modules: ""$g""pyperclip""$w"
+pip3 install pyperclip
 echo -e "$b"">""$w"" successfully installing dependencies"
 wget -q https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py -O "$PREFIX"/bin/E4GL30S1NT && chmod +x "$PREFIX"/bin/E4GL30S1NT
 echo -e "$b"">""$w"" use command ""$g""E4GL30S1NT""$w"" for start the console"
