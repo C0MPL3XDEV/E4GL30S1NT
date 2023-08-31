@@ -45,7 +45,10 @@ apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30
 
 - Installation on termux
 ```bash
-pkg install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/install.sh && bash install.sh
+pkg install git && git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git
+cd E4GL30S1NT
+bash install.sh
+E4GL30S1NT
 ```
 - Uninstallation
 - termux: ```rm -rf $PREFIX/bin/E4GL30S1NT```
