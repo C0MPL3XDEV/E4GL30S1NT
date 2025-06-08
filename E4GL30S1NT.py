@@ -353,7 +353,7 @@ def mailfinder():
         check_email_num = 0
     except KeyboardInterrupt:
         print("ERROR")
-        print("\r"),;sys.stdout.flush()
+        print(f"\r{r}{space}* Operation aborted by user.{w}")
         pass
     f.close()
     print(w+lines)
