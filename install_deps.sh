@@ -3,7 +3,7 @@
 
 echo "Installing runtime dependencies from requirements.txt..."
 if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
+    pip3 install -r requirements.txt
 else
     echo "ERROR: requirements.txt not found!"
     exit 1
@@ -11,7 +11,7 @@ fi
 
 echo ""
 echo "Installing user-specified type hints (types-botocore, types-boto3) and checking for others with mypy..."
-pip install types-botocore types-boto3
+pip3 install types-botocore types-boto3
 
 # Running mypy to install types for E4GL30S1NT.py
 # This might download additional type stubs if mypy deems them necessary for the script.
