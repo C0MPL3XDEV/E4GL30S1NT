@@ -12,13 +12,13 @@ pkg install libxml2 -y
 echo -e "$b"">""$w"" installing pacakge: ""$g""libxslt""$w"
 pkg install libxslt -y
 echo -e "$b"">""$w"" installing pacakge: ""$g""python3""$w"
-pkg install python -y
+pkg install python3 -y
 echo -e "$b"">""$w"" installing modules: ""$g""lxml""$w"
 pip3 install wheel lxml
 echo -e "$b"">""$w"" installing modules: ""$g""requests""$w"
 pip3 install requests
 echo -e "$b"">""$w"" installing modules: ""$g""BeautifulSoup""$w"
-pip install beautifulsoup4
+pip3 install beautifulsoup4
 echo -e "$b"">""$w"" installing modules: ""$g""tabulate""$w"
 pip3 install tabulate
 echo -e "$b"">""$w"" installing modules: ""$g""pyperclip""$w"

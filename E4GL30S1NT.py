@@ -164,27 +164,42 @@ def send_req(url, username):
 
 def check_email(email, api, total, ok, f):
 
-    response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email}, headers = {'Authorization': "Bearer " + api })
-    status = response.json()['status']
-    
-    if status == 'invalid': color = r; back_color = R
-    elif status == 'unknown': color = y; back_color = Y
-    else: color = g; back_color = G
-    
+    try:
+        response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email}, headers = {'Authorization': "Bearer " + api })
+        if response.status_code != 200:
+            color = r; back_color = R
+            status = f"HTTP {response.status_code}"
+        else:
+            try:
+                status = response.json().get('status', 'unknown')
+            except Exception as e:
+                color = r; back_color = R
+                status = "invalid response"
+                print(f"{space}{back_color}{w}  ERROR  {w}{b} {check_email_num+1}/{total}{w} Status: {color}API error or invalid JSON for {email}{w}")
+                global check_email_num
+                check_email_num += 1
+                return
 
-    global check_email_num
-    check_email_num += 1
-    if status == "valid":
-        ok.append(email)
-        f.write(email+"\n")
-        print_space = "  "
-    else:
-        print_space = " "
+        if status == 'invalid': color = r; back_color = R
+        elif status == 'unknown': color = y; back_color = Y
+        elif status == 'valid': color = g; back_color = G
+        else: color = r; back_color = R
 
-    #if check_email_num < 0:
+        global check_email_num
+        check_email_num += 1
+        if status == "valid":
+            ok.append(email)
+            f.write(email+"\n")
+            print_space = "  "
+        else:
+            print_space = " "
 
-    print(f"{space}{back_color}{w}{print_space}{status.upper()}{print_space}{w}{b} {check_email_num}/{total}{w} Status: {color}{status}{w} Email: {email}")
-    
+        print(f"{space}{back_color}{w}{print_space}{status.upper()}{print_space}{w}{b} {check_email_num}/{total}{w} Status: {color}{status}{w} Email: {email}")
+    except Exception as e:
+        color = r; back_color = R
+        global check_email_num
+        check_email_num += 1
+        print(f"{space}{back_color}{w}  ERROR  {w}{b} {check_email_num}/{total}{w} Status: {color}{str(e)}{w} Email: {email}")
 
 def iplocation():
     print(f"{space}{b}>{w} local IP: {os.popen('curl ifconfig.co --silent').readline().strip()}")
