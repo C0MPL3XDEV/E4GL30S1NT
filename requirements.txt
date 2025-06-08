@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+googlesearch-python
+lxml
+tabulate
+pyperclip
