@@ -9,9 +9,9 @@ echo -e "$b"">""$w"" prepare for installing dependencies ..."
 sleep 3
 echo -e "$b"">""$w"" installing package: ""$g""libxml2""$w"
 sudo apt install libxml2 -y
-echo -e "$b"">""$w"" installing pacakge: ""$g""libxslt""$w"
+echo -e "$b"">""$w"" installing package: ""$g""libxslt""$w"
 sudo apt install libxslt1.1 -y
-echo -e "$b"">""$w"" installing pacakge: ""$g""python3""$w"
+echo -e "$b"">""$w"" installing package: ""$g""python3""$w"
 sudo apt install python3 python-is-python3 -y
 echo -e "$b"">""$w"" installing package: ""$g""python3-pip""$w"
 sudo apt install python3-pip -y
