@@ -16,7 +16,7 @@ from getpass import getpass
 from shutil import which
 from threading import Thread
 from time import sleep
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup as parser
 from tabulate import tabulate
 import pyperclip
 import requests
@@ -45,7 +45,10 @@ B = f"{w}\033[1;44m"
 
 
 mail_printate = []
-configs = json.loads(open("configs/config.json", "r").read())
+# Determine the absolute path to configs/config.json relative to this script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(script_dir, "configs", "config.json")
+configs = json.loads(open(config_path, "r").read())
 home = os.getenv("HOME")
 cookifile = f"{home}/.cookies"
 space = "         "
@@ -219,7 +222,7 @@ def phoneinfo():
     api_key = configs['veriphone-api-key']
     if api_key == "":
         api_key = input(f"{space}{w}{b}>{w} enter your api key (https://veriphone.io) :{b} ")
-        with open("configs/config.json", "w") as configs_file:
+        with open(config_path, "w") as configs_file:
             configs["veriphone-api-key"] = api_key
             configs_file.write(json.dumps(configs))
     if not no: menu()
@@ -332,7 +335,7 @@ def mailfinder():
         api = configs["real-email-api-key"]
         if api == "":
             api = input(f"{space}{w}{b}>{w} enter your api key (https://isitarealemail.com) :{b} ")
-            with open("configs/config.json", "w") as configs_file:
+            with open(config_path, "w") as configs_file:
                 configs["real-email-api-key"] = api
                 configs_file.write(json.dumps(configs))
         print(w+lines)
@@ -748,7 +751,7 @@ def settings():
     
     new_value = input(f"{space}{lr}>{r} Insert the new value of {configs_num[option]} :{lr} ")
     configs[configs_num[option]] = new_value
-    with open("configs/config.json", "w") as configs_file:
+    with open(config_path, "w") as configs_file:
         configs_file.write(json.dumps(configs))
 
 def temp_mail_gen(): 
