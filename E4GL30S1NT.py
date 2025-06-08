@@ -45,9 +45,17 @@ B = f"{w}\033[1;44m"
 
 
 mail_printate = []
-# Determine the absolute path to configs/config.json relative to this script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(script_dir, "configs", "config.json")
+# Determine the config path in the user's home directory
+config_dir = os.path.join(os.path.expanduser("~"), ".config", "E4GL30S1NT")
+config_path = os.path.join(config_dir, "config.json")
+
+# Create config directory and file if they do not exist
+if not os.path.exists(config_dir):
+    os.makedirs(config_dir)
+if not os.path.exists(config_path):
+    with open(config_path, "w") as f:
+        f.write("{}\n")
+
 configs = json.loads(open(config_path, "r").read())
 home = os.getenv("HOME")
 cookifile = f"{home}/.cookies"
