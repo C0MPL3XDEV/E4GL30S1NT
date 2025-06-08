@@ -24,7 +24,10 @@ sudo apt install python3-bs4 -y
 echo -e "$b"">""$w"" installing modules: ""$g""tabuate""$w"
 sudo apt install python3-tabulate -y
 echo -e "$b"">""$w"" installing modules: ""$g""pyperclip""$w"
-sudo apt install python3-pyperclip -y
+if ! sudo apt install python3-pyperclip -y; then
+    echo -e "$r""[!] apt install failed, trying pip3...""$w"
+    pip3 install pyperclip
+fi
 echo -e "$b"">""$w"" successfully installing dependencies"
 sudo wget -q https://raw.githubusercontent.com/x31337/E4GL30S1NT/refs/heads/main/E4GL30S1NT.py -O /usr/local/bin/E4GL30S1NT && sudo chmod +x /usr/local/bin/E4GL30S1NT
 echo -e "$b"">""$w"" use command ""$g""E4GL30S1NT""$w"" for start the console"
