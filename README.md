@@ -40,7 +40,7 @@
 
 - Installation on linux
 ```bash
-apt-get install wget && wget https://raw.githubusercontent.com/x31337/E4GL30S1NT/refs/heads/main/linuxinstall.shs && bash linuxinstall.sh
+apt-get install wget && wget https://raw.githubusercontent.com/x31337/E4GL30S1NT/refs/heads/main/linuxinstall.sh && bash linuxinstall.sh
 ```
 
 - Installation on termux
