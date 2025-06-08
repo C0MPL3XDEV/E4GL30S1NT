@@ -87,7 +87,7 @@ logo = f"""{b}
 def menu():
     os.system("clear")
     print(logo)
-    print(f"""
+    print(r"""
          {W}\033[2;30m Choose number or type exit for exiting {w}
     
         {w}{b}  01{w} Userrecon     {d} Username reconnaissance 
@@ -163,7 +163,7 @@ def send_req(url, username):
     userrecon_results.append(f"  {space}{b}[{color}{req.status_code}{b}] {userrecon_num}/71 {w}{url.format(username)}")
 
 def check_email(email, api, total, ok, f):
-
+    global check_email_num
     try:
         response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email}, headers = {'Authorization': "Bearer " + api })
         if response.status_code != 200:
@@ -176,7 +176,6 @@ def check_email(email, api, total, ok, f):
                 color = r; back_color = R
                 status = "invalid response"
                 print(f"{space}{back_color}{w}  ERROR  {w}{b} {check_email_num+1}/{total}{w} Status: {color}API error or invalid JSON for {email}{w}")
-                global check_email_num
                 check_email_num += 1
                 return
 
@@ -185,7 +184,6 @@ def check_email(email, api, total, ok, f):
         elif status == 'valid': color = g; back_color = G
         else: color = r; back_color = R
 
-        global check_email_num
         check_email_num += 1
         if status == "valid":
             ok.append(email)
@@ -197,7 +195,6 @@ def check_email(email, api, total, ok, f):
         print(f"{space}{back_color}{w}{print_space}{status.upper()}{print_space}{w}{b} {check_email_num}/{total}{w} Status: {color}{status}{w} Email: {email}")
     except Exception as e:
         color = r; back_color = R
-        global check_email_num
         check_email_num += 1
         print(f"{space}{back_color}{w}  ERROR  {w}{b} {check_email_num}/{total}{w} Status: {color}{str(e)}{w} Email: {email}")
 
@@ -739,7 +736,7 @@ class Facebook():
 
 def settings():
     os.system("clear")
-    print(f"""{r}
+    print(rf"""{r}
       .---.        .-----------
      /     \  __  /    ------
     / /     \(  )/    -----           
@@ -753,7 +750,7 @@ def settings():
   {lr}Simple Information Gathering Toolkit{w}    
   {lr}Authors: {w}{r}@C0MPL3XDEV{lr} & {w}{r}@JProgrammer-it{w}
 """)
-    print(f"""\
+    print(rf"""\
          {w}{R} \033[1mSETTINGS CHANGER MODE {w}
 """)
     setting_num = 0
@@ -875,7 +872,6 @@ if __name__ == "__main__":
             elif arg[1] in ("4","04"): godorker()
             elif arg[1] in ("5","05"): phoneinfo()
             elif arg[1] in ("6","06"): infoga("dnslookup")
-            elif arg[1] in ("7","07"): infoga("whois")
             elif arg[1] in ("8","08"): infoga("subnetcalc")
             elif arg[1] in ("9","09"): infoga("hostsearch")
             elif arg[1] in ("10"): infoga("mtr")
