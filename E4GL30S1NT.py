@@ -498,7 +498,7 @@ class Facebook():
             'accept'                    : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
             'content-type'              : 'text/html; charset=utf-8'
         }, cookies={"cookie":open(cookifile).read()})
-        find = re.search("(EAAA\w+)",x.text)
+        find = re.search(r"(EAAA\w+)",x.text)
         if find == None:
             exit(r+"[!] failed to get session token"+w)
         else:
