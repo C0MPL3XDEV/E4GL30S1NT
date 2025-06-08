@@ -1,0 +1,231 @@
+{
+  "errors": [],
+  "generated_at": "2025-06-08T08:30:06Z",
+  "metrics": {
+    "./E4GL30S1NT.py": {
+      "CONFIDENCE.HIGH": 9,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 1,
+      "SEVERITY.LOW": 8,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1305,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 9,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 1,
+      "SEVERITY.LOW": 8,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 1305,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": [
+    {
+      "code": "87     \"\"\"Displays the main menu of the E4GL30S1NT toolkit.\"\"\"\n88     os.system(\"clear\")\n89     print(LOGO)\n",
+      "col_offset": 4,
+      "end_col_offset": 22,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a shell: Seems safe, but may be changed in the future, consider rewriting without shell",
+      "line_number": 88,
+      "line_range": [
+        88
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b605_start_process_with_a_shell.html",
+      "test_id": "B605",
+      "test_name": "start_process_with_a_shell"
+    },
+    {
+      "code": "87     \"\"\"Displays the main menu of the E4GL30S1NT toolkit.\"\"\"\n88     os.system(\"clear\")\n89     print(LOGO)\n",
+      "col_offset": 4,
+      "end_col_offset": 22,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 88,
+      "line_range": [
+        88
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "276 \n277 import subprocess\n278 \n",
+      "col_offset": 0,
+      "end_col_offset": 17,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Consider possible security implications associated with the subprocess module.",
+      "line_number": 277,
+      "line_range": [
+        277
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_imports.html#b404-import-subprocess",
+      "test_id": "B404",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "281     try:\n282         process = subprocess.run(\n283             [\"curl\", \"ifconfig.co\", \"--silent\"],\n284             capture_output=True,\n285             text=True,\n286             check=True,\n287             timeout=10,\n288         )\n289         local_ip = process.stdout.strip()\n",
+      "col_offset": 18,
+      "end_col_offset": 9,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 282,
+      "line_range": [
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "281     try:\n282         process = subprocess.run(\n283             [\"curl\", \"ifconfig.co\", \"--silent\"],\n284             capture_output=True,\n285             text=True,\n286             check=True,\n287             timeout=10,\n288         )\n289         local_ip = process.stdout.strip()\n",
+      "col_offset": 18,
+      "end_col_offset": 9,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "subprocess call - check for execution of untrusted input.",
+      "line_number": 282,
+      "line_range": [
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b603_subprocess_without_shell_equals_true.html",
+      "test_id": "B603",
+      "test_name": "subprocess_without_shell_equals_true"
+    },
+    {
+      "code": "1189     \"\"\"Allows the user to change settings in the config file.\"\"\"\n1190     os.system(\"clear\")\n1191     print(\n",
+      "col_offset": 4,
+      "end_col_offset": 22,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a shell: Seems safe, but may be changed in the future, consider rewriting without shell",
+      "line_number": 1190,
+      "line_range": [
+        1190
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b605_start_process_with_a_shell.html",
+      "test_id": "B605",
+      "test_name": "start_process_with_a_shell"
+    },
+    {
+      "code": "1189     \"\"\"Allows the user to change settings in the config file.\"\"\"\n1190     os.system(\"clear\")\n1191     print(\n",
+      "col_offset": 4,
+      "end_col_offset": 22,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Starting a process with a partial executable path",
+      "line_number": 1190,
+      "line_range": [
+        1190
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b607_start_process_with_partial_path.html",
+      "test_id": "B607",
+      "test_name": "start_process_with_partial_path"
+    },
+    {
+      "code": "1249     domain_choices = [\"1secmail.com\", \"1secmail.net\", \"1secmail.org\"]\n1250     chosen_domain = random.choice(domain_choices)\n1251     # mail_printate_list is already defined in the outer scope if needed globally,\n",
+      "col_offset": 20,
+      "end_col_offset": 49,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 330,
+        "link": "https://cwe.mitre.org/data/definitions/330.html"
+      },
+      "issue_severity": "LOW",
+      "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+      "line_number": 1250,
+      "line_range": [
+        1250
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/blacklists/blacklist_calls.html#b311-random",
+      "test_id": "B311",
+      "test_name": "blacklist"
+    },
+    {
+      "code": "1379                 script_path = \"/usr/bin/sigit\"\n1380             os.system(\n1381                 (\n1382                     f\"wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py -O {script_path} \"\n1383                     f\"&& chmod +x {script_path}\"\n1384                 )\n1385             )\n1386             print(f\"{BLUE}>{WHITE} wrapper script have been updated\")\n",
+      "col_offset": 12,
+      "end_col_offset": 13,
+      "filename": "./E4GL30S1NT.py",
+      "issue_confidence": "HIGH",
+      "issue_cwe": {
+        "id": 78,
+        "link": "https://cwe.mitre.org/data/definitions/78.html"
+      },
+      "issue_severity": "HIGH",
+      "issue_text": "Starting a process with a shell, possible injection detected, security issue.",
+      "line_number": 1380,
+      "line_range": [
+        1380,
+        1381,
+        1382,
+        1383,
+        1384,
+        1385
+      ],
+      "more_info": "https://bandit.readthedocs.io/en/1.8.3/plugins/b605_start_process_with_a_shell.html",
+      "test_id": "B605",
+      "test_name": "start_process_with_a_shell"
+    }
+  ]
+}
