@@ -24,11 +24,7 @@ sudo apt install python3-bs4 -y
 echo -e "$b"">""$w"" installing modules: ""$g""tabuate""$w"
 sudo apt install python3-tabulate -y
 echo -e "$b"">""$w"" installing modules: ""$g""pyperclip""$w"
-sudo apt install pyperclip  -y
-echo -e "$b"">""$w"" installing modules: ""$g""pyperclip""$w"
-if [ $? -ne 0 ]; then
-  echo -e "$r"">""$w" WARNING: pyperclip is still not installed. Please install it manually with: sudo python3 -m pip install pyperclip"
-fi
+sudo apt install python3-pyperclip -y
 echo -e "$b"">""$w"" successfully installing dependencies"
 sudo wget -q https://raw.githubusercontent.com/x31337/E4GL30S1NT/refs/heads/main/E4GL30S1NT.py -O /usr/local/bin/E4GL30S1NT && sudo chmod +x /usr/local/bin/E4GL30S1NT
 echo -e "$b"">""$w"" use command ""$g""E4GL30S1NT""$w"" for start the console"
