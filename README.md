@@ -40,12 +40,12 @@
 
 - Installation on linux
 ```bash
-apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/linuxinstall.sh && bash linuxinstall.sh
+apt-get install wget && wget https://raw.githubusercontent.com/x31337/E4GL30S1NT/refs/heads/main/linuxinstall.shs && bash linuxinstall.sh
 ```
 
 - Installation on termux
 ```bash
-pkg install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/install.sh && bash install.sh
+pkg install wget && wget https://github.com/x31337/E4GL30S1NT/blob/main/install.sh && bash install.sh
 ```
 - Uninstallation
 - termux: ```rm -rf $PREFIX/bin/E4GL30S1NT```
