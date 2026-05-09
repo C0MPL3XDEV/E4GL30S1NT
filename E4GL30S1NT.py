@@ -154,7 +154,7 @@ def menu():
 
 def mainmenu():
     """Handles the main menu input and navigation."""
-    fb_instance = Facebook()
+    fb_instance = None
     while True:
         menu()
         try:
@@ -165,6 +165,8 @@ def mainmenu():
                 elif cmd in ("1", "01"):
                     userrecon()
                 elif cmd in ("2", "02"):
+                    if fb_instance is None:
+                        fb_instance = Facebook()
                     fb_instance.facedumper()
                 elif cmd in ("3", "03"):
                     mailfinder()
@@ -1318,7 +1320,6 @@ if __name__ == "__main__":
     #     print(f"debugpy: Error setting up debugger: {e}")
 
     main_args = sys.argv
-    fb_instance = Facebook()
     if len(main_args) == 1:
         mainmenu()
     elif len(main_args) == 2:
@@ -1354,7 +1355,7 @@ if __name__ == "__main__":
             if command_arg in ("1", "01"):
                 userrecon()
             elif command_arg in ("2", "02"):
-                fb_instance.facedumper()
+                Facebook.facedumper()
             elif command_arg in ("3", "03"):
                 mailfinder()
             elif command_arg in ("4", "04"):
