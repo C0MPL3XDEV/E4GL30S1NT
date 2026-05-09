@@ -25,7 +25,6 @@ from googlesearch import search # type: ignore
 from lxml.html import fromstring
 from tabulate import tabulate
 import debugpy # Added debugpy import
-from urllib3.contrib.emscripten import response
 
 # ANSI escape codes for colors
 RED = "\033[31m"
