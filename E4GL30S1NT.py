@@ -123,6 +123,7 @@ def menu():
     """Displays the main menu of the E4GL30S1NT toolkit."""
     os.system("clear")
     print(LOGO)
+
     print(
         f"""
          {BG_WHITE}\\033[2;30m Choose number or type exit for exiting {WHITE}
@@ -145,13 +146,13 @@ def menu():
         {WHITE}{BLUE}  00{WHITE} Exit          {DARK_GRAY} bye bye ):
         """
     )
-    mainmenu()
 
 
 def mainmenu():
     """Handles the main menu input and navigation."""
     fb_instance = Facebook()
     while True:
+        menu()
         try:
             cmd = input(f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} choose:{BLUE} ")
             if int(len(cmd)) < 6:
@@ -338,7 +339,7 @@ def iplocation():
 
     ip_address = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter IP:{BLUE} ")
     if not ip_address.split(".")[0].isnumeric():
-        menu()
+        return
     print(WHITE + LINES_SEPARATOR)
     try:
         req = requests.get(
@@ -364,20 +365,19 @@ def iplocation():
         print(f"{RED}Error fetching IP information: {e}{WHITE}")
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def infoga(option):
     """Retrieves information about a domain or IP address."""
     target = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter domain or IP:{BLUE} ")
     if not target:
-        menu()
+        return
     if target.split(".")[0].isnumeric():
         try:
             target = socket.gethostbyname(target)
         except socket.gaierror as e:
             print(f"{RED}Error resolving hostname: {e}{WHITE}")
-            menu()
             return
     print(WHITE + LINES_SEPARATOR)
     try:
@@ -390,7 +390,7 @@ def infoga(option):
         print(f"{RED}Error fetching information: {e}{WHITE}")
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def phoneinfo():
@@ -406,7 +406,7 @@ def phoneinfo():
         with open(CONFIG_PATH, "w", encoding="utf-8") as configs_file:
             json.dump(CONFIGS, configs_file)
     if not phone_number:
-        menu()
+        return
     print(WHITE + LINES_SEPARATOR)
     api_url = f"{VERIPHONE_API_BASE_URL}?phone={phone_number}&key={api_key}"
     try:
@@ -430,7 +430,7 @@ def phoneinfo():
     print(f"{SPACE_PREFIX}{BG_BLUE} DONE {BG_RED} {phone_number} {WHITE}")
 
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def godorker():
@@ -439,7 +439,7 @@ def godorker():
         f"{SPACE_PREFIX}{BLUE}>{WHITE} enter dork (inurl/intext/etc):{BLUE} "
     ).lower()
     if not dork_query:
-        menu()
+        return
     print(WHITE + LINES_SEPARATOR)
     urls_found = []
     try:
@@ -481,14 +481,14 @@ def godorker():
         f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(urls_found))} retrieved as: {YELLOW}{RESULTS_GODORKER_TXT}"
     )
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def mailfinder():
     """Finds email addresses associated with a given name."""
     full_name = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter name:{BLUE} ").lower()
     if not full_name:
-        menu()
+        return
     email_providers = [
         "gmail.com", "yahoo.com", "hotmail.com", "aol.com", "msn.com",
         "comcast.net", "live.com", "rediffmail.com", "ymail.com",
@@ -561,7 +561,7 @@ def mailfinder():
         f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(valid_emails))} retrieved as: {YELLOW}{RESULTS_MAILFINDER_TXT}"
     )
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def userrecon():
@@ -574,7 +574,7 @@ def userrecon():
         f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter username:{BLUE} "
     ).lower()
     if not username_to_check:
-        menu()
+        return
     url_list = [
         "https://facebook.com/{}", "https://instagram.com/{}",
         "https://twitter.com/{}", "https://youtube.com/{}",
@@ -630,7 +630,7 @@ def userrecon():
     print()
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def bypass_bitly():
@@ -652,7 +652,7 @@ def bypass_bitly():
         print(f"{RED}Error parsing Bitly response: {e}{WHITE}")
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 def github_lookup():
@@ -683,7 +683,7 @@ def github_lookup():
         print(f"{RED}Error decoding JSON response from GitHub.{WHITE}")
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    menu()
+    return
 
 
 class Facebook:
@@ -755,7 +755,7 @@ class Facebook:
         while True:
             user_choice = input(f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} choose: {BLUE}")
             if not user_choice:
-                menu()
+                return
             elif user_choice in ("1", "01"):
                 self.dump_all()
             elif user_choice in ("2", "02"):
@@ -827,7 +827,7 @@ class Facebook:
             print(f"{RED}Error decoding friend list response.{WHITE}")
         print(WHITE + LINES_SEPARATOR)
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
     def dump_id(self):
         """Dumps Facebook user IDs from the friend list."""
@@ -873,7 +873,7 @@ class Facebook:
             f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(id_list))} retrieved as: {YELLOW}{DUMP_IDFRIENDS_TXT}"
         )
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
     def dump_email(self):
         """Dumps email addresses from the friend list."""
@@ -932,7 +932,7 @@ class Facebook:
         print(WHITE + LINES_SEPARATOR)
         print(f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(email_list))} retrieved as: {YELLOW}{DUMP_EMAIL_TXT}")
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
     def dump_phone(self):
         """Dumps phone numbers from the friend list."""
@@ -993,7 +993,7 @@ class Facebook:
             f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(phone_list))} retrieved as: {YELLOW}{DUMP_PHONE_TXT}"
         )
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
     def dump_birthday(self):
         """Dumps birthdays from the friend list."""
@@ -1054,7 +1054,7 @@ class Facebook:
             f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(birthday_list))} retrieved as: {YELLOW}{DUMP_BIRTHDAY_TXT}"
         )
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
     def dump_location(self):
         """Dumps locations from the friend list."""
@@ -1115,7 +1115,7 @@ class Facebook:
             f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(location_list))} retrieved as: {YELLOW}{DUMP_LOCATION_TXT}"
         )
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        menu()
+        return
 
 
 def settings():
@@ -1318,7 +1318,7 @@ if __name__ == "__main__":
     main_args = sys.argv
     fb_instance = Facebook()
     if len(main_args) == 1:
-        menu()
+        mainmenu()
     elif len(main_args) == 2:
         command_arg = main_args[1]
         if command_arg == "update":
