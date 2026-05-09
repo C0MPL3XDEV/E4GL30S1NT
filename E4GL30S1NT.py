@@ -3,6 +3,7 @@
 # Authors: C0MPL3XDEV & JProgrammer-it
 # Last update: 21/09/2021 - version 1.1
 """Simple Information Gathering Toolkit"""
+import ipaddress
 import json
 import os
 import random
@@ -11,11 +12,12 @@ import socket
 import sys
 import textwrap
 import subprocess
-import threading
+import urllib.parse
 from getpass import getpass
 from shutil import which
 from threading import Thread
 from time import sleep
+import threading
 from wsgiref import headers
 
 import requests
@@ -339,8 +341,11 @@ def iplocation():
         print(f"{RED}Timeout getting local IP.{WHITE}")
         local_ip = "Unknown"
 
-    ip_address = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter IP:{BLUE} ")
-    if not ip_address.split(".")[0].isnumeric():
+    ip_address = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter IP:{BLUE} ").strip()
+    try:
+        ipaddress.ip_address(ip_address)
+    except ValueError:
+        print(f"{RED}Invalid IP address.{WHITE}")
         return
     print(WHITE + LINES_SEPARATOR)
     try:
@@ -372,9 +377,10 @@ def iplocation():
 
 def infoga(option):
     """Retrieves information about a domain or IP address."""
-    target = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter domain or IP:{BLUE} ")
+    target = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter domain or IP:{BLUE} ").strip()
     if not target:
         return
+    target = urllib.parse.quote(target, safe="-._~")
     if target.split(".")[0].isnumeric():
         try:
             target = socket.gethostbyname(target)
@@ -410,7 +416,7 @@ def phoneinfo():
     if not phone_number:
         return
     print(WHITE + LINES_SEPARATOR)
-    api_url = f"{VERIPHONE_API_BASE_URL}?phone={phone_number}&key={api_key}"
+    api_url = f"{VERIPHONE_API_BASE_URL}?phone={urllib.parse.quote(phone_number.strip())}&key={api_key}"
     try:
         req = requests.get(api_url, timeout=10)
         req.raise_for_status()
@@ -638,7 +644,12 @@ def userrecon():
 def bypass_bitly():
     """Bypasses Bitly URL shorteners."""
     print(WHITE + LINES_SEPARATOR)
-    bitly_url_input = input(f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} Bitly URL: {BLUE}")
+    bitly_url_input = input(f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} Bitly URL: {BLUE}").strip()
+    parsed = urllib.parse.urlparse(bitly_url_input)
+
+    if parsed.scheme not in ("http", "https") or not parsed.netloc:
+        print(f"{RED}Invalid URL. Must start with http:// or https://{WHITE}")
+        return
     try:
         bitly_code_response = requests.get(
             bitly_url_input, allow_redirects=False, timeout=10
@@ -662,7 +673,10 @@ def github_lookup():
     print(WHITE + LINES_SEPARATOR)
     github_user = input(
         f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} Github username: {BLUE}"
-    )
+    ).strip()
+    if not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9-]{0,37}$', github_user):
+        print(f"{RED}Invalid Github username.{WHITE}")
+        return
     print(WHITE)
     try:
         req = requests.get(
