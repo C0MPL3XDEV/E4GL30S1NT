@@ -12,10 +12,12 @@ import socket
 import sys
 import textwrap
 import subprocess
+import threading
 from getpass import getpass
 from shutil import which
 from threading import Thread
 from time import sleep
+from wsgiref import headers
 
 import requests
 from bs4 import BeautifulSoup
@@ -23,6 +25,7 @@ from googlesearch import search # type: ignore
 from lxml.html import fromstring
 from tabulate import tabulate
 import debugpy # Added debugpy import
+from urllib3.contrib.emscripten import response
 
 # ANSI escape codes for colors
 RED = "\033[31m"
@@ -99,6 +102,8 @@ ALL_MAILS_DIRNAME = "All Mails"
 USER_RECON_NUM = 0
 USER_RECON_WORKING = 0
 CHECK_EMAIL_NUM = 0
+_RECON_LOCK = threading.Lock()
+_EMAIL_LOCK = threading.Lock()
 
 HEADERS = {
     "User-Agent": "Opera/9.80 (J2ME/MIDP; Opera Mini/9.80 (S60; SymbOS; Opera Mobi/23.334; U; id) Presto/2.5.25 Version/10.54"
@@ -228,18 +233,19 @@ def send_req(url, username):
 
     # pylint: disable=global-statement
     global USER_RECON_NUM, USER_RECON_WORKING
-    USER_RECON_NUM += 1
-    user_recon_num_local = USER_RECON_NUM
-    user_recon_working_local = USER_RECON_WORKING
-
     if req.status_code == 200:
         color_code = GREEN
-        USER_RECON_WORKING += 1
-        user_recon_working_local = USER_RECON_WORKING
     elif req.status_code == 404:
         color_code = RED
     else:
         color_code = YELLOW
+
+    with _RECON_LOCK:
+        USER_RECON_NUM += 1
+        if req.status_code == 200:
+            USER_RECON_WORKING += 1
+        user_recon_num_local = USER_RECON_NUM
+        user_recon_working_local = USER_RECON_WORKING
 
     display_progress(user_recon_num_local, 71, f"FOUND: {user_recon_working_local}")
 
@@ -249,8 +255,6 @@ def send_req(url, username):
 
 
 def check_email(email, api, total, ok_list, output_file):
-    """Checks if an email address is valid using an API."""
-    # pylint: disable=global-statement
     global CHECK_EMAIL_NUM
     try:
         response = requests.get(
@@ -267,15 +271,14 @@ def check_email(email, api, total, ok_list, output_file):
             try:
                 status_val = response.json().get("status", "unknown")
             except json.JSONDecodeError:
-                color_code = RED
-                back_color_code = BG_RED
-                status_val = "invalid response"
+                with _EMAIL_LOCK:
+                    CHECK_EMAIL_NUM += 1
+                    current_count = CHECK_EMAIL_NUM
                 print(
-                    f"{SPACE_PREFIX}{back_color_code}{WHITE}  ERROR  {WHITE}{BLUE} "
-                    f"{CHECK_EMAIL_NUM+1}/{total}{WHITE} Status: {color_code}API "
+                    f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
+                    f"{current_count}/{total}{WHITE} Status: {RED}API "
                     f"error or invalid JSON for {email}{WHITE}"
                 )
-                CHECK_EMAIL_NUM +=1
                 return
 
         if status_val == "invalid":
@@ -284,36 +287,36 @@ def check_email(email, api, total, ok_list, output_file):
         elif status_val == "unknown":
             color_code = YELLOW
             back_color_code = BG_YELLOW
-        elif status_val == "valid":
+        elif status_val == 'valid':
             color_code = GREEN
             back_color_code = BG_GREEN
         else:
             color_code = RED
             back_color_code = BG_RED
 
-        CHECK_EMAIL_NUM += 1
-        if status_val == "valid":
-            ok_list.append(email)
-            output_file.write(email + "\n")
-            print_space_val = "  "
-        else:
-            print_space_val = " "
+        with _EMAIL_LOCK:
+            CHECK_EMAIL_NUM += 1
+            current_count = CHECK_EMAIL_NUM
+            if status_val == "valid":
+                ok_list.append(email)
+                output_file.write(email + "\n")
 
+
+        print_space_val = "  " if status_val == "valid" else " "
         print(
             f"{SPACE_PREFIX}{back_color_code}{WHITE}{print_space_val}{status_val.upper()}"
-            f"{print_space_val}{WHITE}{BLUE} {CHECK_EMAIL_NUM}/{total}{WHITE} Status: "
+            f"{print_space_val}{WHITE}{BLUE} {current_count}/{total}{WHITE} Status: "
             f"{color_code}{status_val}{WHITE} Email: {email}"
         )
     except requests.exceptions.RequestException as e_check_email:
-        color_code = RED
-        back_color_code = BG_RED
-        CHECK_EMAIL_NUM += 1
+        with _EMAIL_LOCK:
+            CHECK_EMAIL_NUM += 1
+            current_count = CHECK_EMAIL_NUM
         print(
-            f"{SPACE_PREFIX}{back_color_code}{WHITE}  ERROR  {WHITE}{BLUE} "
-            f"{CHECK_EMAIL_NUM}/{total}{WHITE} Status: {color_code}"
+            f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
+            f"{current_count}/{total}{WHITE} Status: {RED}"
             f"{str(e_check_email)}{WHITE} Email: {email}"
         )
-
 
 def iplocation():
     """Retrieves and displays geolocation information for an IP address."""
