@@ -1,7 +1,6 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 # Authors: C0MPL3XDEV & JProgrammer-it
-# Support me with follow my instagram page and github page
-# Disclaimer: please dont edit or recode the original source code !
 # Last update: 21/09/2021 - version 1.1
 """Simple Information Gathering Toolkit"""
 import json
@@ -24,7 +23,6 @@ from bs4 import BeautifulSoup
 from googlesearch import search # type: ignore
 from lxml.html import fromstring
 from tabulate import tabulate
-import debugpy # Added debugpy import
 
 # ANSI escape codes for colors
 RED = "\033[31m"
@@ -1303,22 +1301,6 @@ def temp_mail_gen():
 
 
 if __name__ == "__main__":
-    # # For debugging with debugpy:
-    # # 1. Ensure debugpy is installed (e.g., via install_deps.sh or pip install debugpy).
-    # # 2. Uncomment the following lines.
-    # # 3. Run the script. It will wait for a debugger to attach on the specified port.
-    # try:
-    #     import debugpy
-    #     DEBUGPY_PORT = 5678
-    #     debugpy.listen(("0.0.0.0", DEBUGPY_PORT))
-    #     print(f"debugpy: Listening for debugger attachment on port {DEBUGPY_PORT}...")
-    #     debugpy.wait_for_client()
-    #     print("debugpy: Debugger attached.")
-    # except ImportError:
-    #     print("debugpy: Module not found. Skipping debugger setup. Install with 'pip install debugpy'.")
-    # except Exception as e:
-    #     print(f"debugpy: Error setting up debugger: {e}")
-
     main_args = sys.argv
     if len(main_args) == 1:
         mainmenu()
