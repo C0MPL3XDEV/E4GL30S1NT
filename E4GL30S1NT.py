@@ -27,6 +27,7 @@ from eagleosint.config import (
     REALEMAIL_API_CONFIG_KEY, VERIPHONE_API_CONFIG_KEY,
     logger, save_config,
 )
+from eagleosint.session import HEADERS, session as _session
 from googlesearch import search # type: ignore
 from lxml.html import fromstring
 from tabulate import tabulate
@@ -82,12 +83,6 @@ USER_RECON_WORKING = 0
 CHECK_EMAIL_NUM = 0
 _RECON_LOCK = threading.Lock()
 _EMAIL_LOCK = threading.Lock()
-
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
-}
-_session = requests.Session()
-_session.headers.update(HEADERS)
 
 LOGO = f"""{BLUE}
       .---.        .-----------
