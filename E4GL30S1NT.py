@@ -6,9 +6,7 @@
 import click
 import ipaddress
 import json
-import logging
 import os
-from logging.handlers import RotatingFileHandler
 import random
 import re
 import socket
@@ -21,10 +19,14 @@ from shutil import which
 from threading import Thread
 from time import sleep
 import threading
-from wsgiref import headers
 
 import requests
 from bs4 import BeautifulSoup
+from eagleosint.config import (
+    CONFIGS, CONFIG_PATH, COOKIE_FILE,
+    REALEMAIL_API_CONFIG_KEY, VERIPHONE_API_CONFIG_KEY,
+    logger, save_config,
+)
 from googlesearch import search # type: ignore
 from lxml.html import fromstring
 from tabulate import tabulate
@@ -48,70 +50,6 @@ BG_BLUE = f"{WHITE}\033[1;44m"
 
 
 MAIL_PRINTATE = []
-# Determine the config path in the user's home directory
-CONFIG_DIR_NAME = ".config"
-E4GL30S1NT_CONFIG_DIR_NAME = "E4GL30S1NT"
-CONFIG_FILENAME = "config.json"
-
-CONFIG_DIR = os.path.join(os.path.expanduser("~"), CONFIG_DIR_NAME, E4GL30S1NT_CONFIG_DIR_NAME)
-CONFIG_PATH = os.path.join(CONFIG_DIR, CONFIG_FILENAME)
-
-# Create config directory and file if they do not exist
-if not os.path.exists(CONFIG_DIR):
-    os.makedirs(CONFIG_DIR)
-if not os.path.exists(CONFIG_PATH):
-    with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-        f.write("{}\n")
-
-with open(CONFIG_PATH, "r", encoding="utf-8") as config_file:
-    CONFIGS = json.load(config_file)
-
-_ENV_KEY_MAP = {
-    "real-email-api-key": "E4GL30S1NT_REALEMAIL_KEY",
-    "veriphone-api-key":  "E4GL30S1NT_VERIPHONE_KEY",
-}
-for _cfg_key, _env_var in _ENV_KEY_MAP.items():
-    _env_val = os.getenv(_env_var)
-    if _env_val:
-        CONFIGS[_cfg_key] = _env_val
-
-LOG_PATH = os.path.join(CONFIG_DIR, "eagleosint.log")
-
-def _setup_logger() -> logging.Logger:
-    _logger = logging.getLogger("eagleosint")
-    if _logger.handlers:
-        return _logger
-    _logger.setLevel(logging.DEBUG)
-    try:
-        os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
-        _handler = RotatingFileHandler(
-            LOG_PATH, maxBytes=500_000, backupCount=2, encoding="utf-8"
-        )
-        _handler.setFormatter(logging.Formatter(
-            "%(asctime)s %(levelname)-8s %(funcName)s: %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        ))
-        _logger.addHandler(_handler)
-    except OSError as e:
-        print(f"[warn] Could not create log file at {LOG_PATH}: {e}")
-    return _logger
-
-logger = _setup_logger()
-logger.info("session started — E4GL30S1NT loaded")
-
-def _save_config():
-    """Write CONFIGS atomically. Uses write-to-temp + os.replace() to prevent
-       file corruption if the process is interrupted mid-write."""
-    tmp_path = CONFIG_PATH + ".tmp"
-    with open(tmp_path, "w", encoding="utf-8") as tmp_file:
-        json.dump(CONFIGS, tmp_file, indent=2)
-    os.replace(tmp_path, CONFIG_PATH)
-    logger.debug("Config saved  to %s", CONFIG_PATH)
-
-HOME_DIR = os.getenv("HOME", "") # Provide a default for HOME_DIR
-COOKIE_FILENAME = ".cookies"
-COOKIE_FILE = os.path.join(HOME_DIR, COOKIE_FILENAME) if HOME_DIR else ""
-
 
 SPACE_PREFIX = "         "
 LINES_SEPARATOR = SPACE_PREFIX + "-" * 44
@@ -126,10 +64,6 @@ REALEMAIL_API_URL = "https://isitarealemail.com/api/email/validate"
 GITHUB_API_URL = "https://api.github.com/users/{}"
 TEMPMAIL_API_URL = "https://www.1secmail.com/api/v1/"
 TEMPMAIL_MAILBOX_URL = "https://www.1secmail.com/mailbox"
-
-# Config Keys for API
-REALEMAIL_API_CONFIG_KEY = "real-email-api-key"
-VERIPHONE_API_CONFIG_KEY = "veriphone-api-key"
 
 # Filenames for results
 RESULTS_GODORKER_TXT = "result_godorker.txt"
@@ -464,7 +398,7 @@ def phoneinfo():
             f":{BLUE} "
         )
         CONFIGS[VERIPHONE_API_CONFIG_KEY] = api_key
-        _save_config()
+        save_config()
     if not phone_number:
         return
     print(WHITE + LINES_SEPARATOR)
@@ -584,7 +518,7 @@ def mailfinder():
                     f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter your api key (https://isitarealemail.com) :{BLUE} "
                 )
                 CONFIGS[REALEMAIL_API_CONFIG_KEY] = api_key
-                _save_config()
+                save_config()
             print(WHITE + LINES_SEPARATOR)
             threads = []
             global CHECK_EMAIL_NUM
@@ -1075,7 +1009,7 @@ def settings():
         f"{SPACE_PREFIX}{LIGHT_RED}>{RED} Insert the new value of {config_options[chosen_option]} :{LIGHT_RED} "
     )
     CONFIGS[config_options[chosen_option]] = new_setting_value
-    _save_config()
+    save_config()
 
 
 def temp_mail_gen():
