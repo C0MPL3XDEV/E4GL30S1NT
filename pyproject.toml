@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "eagleosint"
+version = "2.0.0"
+description = "Simple Information Gathering Toolkit"
+readme = "README.md"
+license = { text = "GPL-3.0" }
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "requests",
+    "beautifulsoup4",
+    "googlesearch-python",
+    "lxml",
+    "tabulate",
+]
+
+[project.scripts]
+eagleosint = "eagleosint.cli:main"
+e4gl = "eagleosint.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["eagleosint"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
