@@ -891,11 +891,15 @@ class Facebook:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return
 
-    def dump_email(self):
-        """Dumps email addresses from the friend list."""
+
+    def _dump_field(self, field_key: str, output_path: str, display_label: str) -> None:
+        """Fetch one field from each friend profile and write results to file.
+        field_key supports dot-notation for nested fields (e.g. 'location.name').
+        """
         token = self.user_token()
         if not token:
             return
+        result_list = []
         try:
             req = requests.get(
                 GRAPH_FB_URL.format(
@@ -906,232 +910,64 @@ class Facebook:
             )
             req.raise_for_status()
             res_data = req.json()
-            email_list = []
             print(WHITE + LINES_SEPARATOR)
-            with open(DUMP_EMAIL_TXT, "w", encoding="utf-8") as email_file:
+            with open(output_path, "w", encoding="utf-8") as out_file:
                 try:
-                    for data_item_info in res_data.get("data", []):
+                    for item in res_data.get("data", []):
                         try:
-                            req_friend_email = requests.get(
+                            r = requests.get(
                                 GRAPH_FB_URL.format(
-                                    f"/{data_item_info['id']}?access_token={token}&limit=5000"
+                                    f"/{item['id']}?access_token={token}&limit=5000"
                                 ),
                                 headers=HEADERS,
                                 timeout=10,
                             )
-                            req_friend_email.raise_for_status()
-                            res_friend_email_data = req_friend_email.json()
-                            name_val = res_friend_email_data.get("name")
-                            email_val = res_friend_email_data.get("email")
-                            friend_id_val = res_friend_email_data.get("id")
-                            if name_val and email_val and friend_id_val:
+                            r.raise_for_status()
+                            d = r.json()
+                            name = d.get("name")
+                            fid = d.get("id")
+                            val = d
+                            for part in field_key.split("."):
+                                val = val.get(part) if isinstance(val, dict) else None
+                            if name and val and fid:
                                 print(
-                                    f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Email: {email_val} {RED}->{WHITE} {name_val}"
+                                    f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} "
+                                    f"{display_label}: {val} {RED}->{WHITE} {name}"
                                 )
-                                email_list.append(email_val)
-                                email_file.write(f"{email_val}|{friend_id_val}|{name_val}\n")
-                        except requests.exceptions.RequestException:
-                            continue
-                        except json.JSONDecodeError:
+                                result_list.append(val)
+                                out_file.write(f"{val}|{fid}|{name}\n")
+                        except (requests.exceptions.RequestException, json.JSONDecodeError):
                             continue
                         except KeyboardInterrupt:
                             break
                 except KeyboardInterrupt:
                     pass
         except requests.exceptions.RequestException as e:
-            print(f"{RED}Error fetching email list: {e}{WHITE}")
+            print(f"{RED}Error fetching friend list: {e}{WHITE}")
         except json.JSONDecodeError:
-            print(f"{RED}Error decoding email list response.{WHITE}")
-        finally:
-            if 'email_file' in locals() and not email_file.closed:
-                email_file.close()
+            print(f"{RED}Error decoding friend list response.{WHITE}")
         print(WHITE + LINES_SEPARATOR)
-        print(f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(email_list))} retrieved as: {YELLOW}{DUMP_EMAIL_TXT}")
+        print(
+            f"{SPACE_PREFIX}{BLUE}>{WHITE} {len(result_list)} retrieved as: "
+            f"{YELLOW}{output_path}"
+        )
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        return
+
+    def dump_email(self):
+        """Dumps email addresses from the friend list."""
+        self._dump_field("email", DUMP_EMAIL_TXT, "Email")
 
     def dump_phone(self):
         """Dumps phone numbers from the friend list."""
-        token = self.user_token()
-        if not token:
-            return
-        try:
-            req = requests.get(
-                GRAPH_FB_URL.format(
-                    f"/v3.2/me/friends/?fields=name,email&access_token={token}&limit=5000"
-                ),
-                headers=HEADERS,
-                timeout=10,
-            )
-            req.raise_for_status()
-            res_data = req.json()
-            phone_list = []
-            print(WHITE + LINES_SEPARATOR)
-            with open(DUMP_PHONE_TXT, "w", encoding="utf-8") as phone_file:
-                try:
-                    for data_item_info in res_data.get("data", []):
-                        try:
-                            req_friend_phone = requests.get(
-                                GRAPH_FB_URL.format(
-                                    f"/{data_item_info['id']}?access_token={token}&limit=5000"
-                                ),
-                                headers=HEADERS,
-                                timeout=10,
-                            )
-                            req_friend_phone.raise_for_status()
-                            res_friend_phone_data = req_friend_phone.json()
-                            name_val = res_friend_phone_data.get("name")
-                            phone_val = res_friend_phone_data.get("mobile_phone")
-                            friend_id_val = res_friend_phone_data.get("id")
-                            if name_val and phone_val and friend_id_val:
-                                print(
-                                    f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Phone: {phone_val} {RED}->{WHITE} {name_val}"
-                                )
-                                phone_list.append(phone_val)
-                                phone_file.write(f"{phone_val}|{friend_id_val}|{name_val}\n")
-                        except requests.exceptions.RequestException:
-                            continue
-                        except json.JSONDecodeError:
-                            continue
-                        except KeyboardInterrupt:
-                            break
-                except KeyboardInterrupt:
-                    pass
-        except requests.exceptions.RequestException as e:
-            print(f"{RED}Error fetching phone list: {e}{WHITE}")
-        except json.JSONDecodeError:
-            print(f"{RED}Error decoding phone list response.{WHITE}")
-        finally:
-            if 'phone_file' in locals() and not phone_file.closed:
-                phone_file.close()
-        print(WHITE + LINES_SEPARATOR)
-        print(
-            f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(phone_list))} retrieved as: {YELLOW}{DUMP_PHONE_TXT}"
-        )
-        getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        return
+        self._dump_field("mobile_phone", DUMP_PHONE_TXT, "Phone")
 
     def dump_birthday(self):
         """Dumps birthdays from the friend list."""
-        token = self.user_token()
-        if not token:
-            return
-        try:
-            req = requests.get(
-                GRAPH_FB_URL.format(
-                    f"/v3.2/me/friends/?fields=name,email&access_token={token}&limit=5000"
-                ),
-                headers=HEADERS,
-                timeout=10,
-            )
-            req.raise_for_status()
-            res_data = req.json()
-            birthday_list = []
-            print(WHITE + LINES_SEPARATOR)
-            with open(DUMP_BIRTHDAY_TXT, "w", encoding="utf-8") as birthday_file:
-                try:
-                    for data_item_info in res_data.get("data", []):
-                        try:
-                            req_friend_bday = requests.get(
-                                GRAPH_FB_URL.format(
-                                    f"/{data_item_info['id']}?access_token={token}&limit=5000"
-                                ),
-                                headers=HEADERS,
-                                timeout=10,
-                            )
-                            req_friend_bday.raise_for_status()
-                            res_friend_bday_data = req_friend_bday.json()
-                            name_val = res_friend_bday_data.get("name")
-                            day_val = res_friend_bday_data.get("birthday")
-                            friend_id_val = res_friend_bday_data.get("id")
-                            if name_val and day_val and friend_id_val:
-                                print(
-                                    f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Birthday: {day_val} {RED}->{WHITE} {name_val}"
-                                )
-                                birthday_list.append(day_val)
-                                birthday_file.write(f"{day_val}|{friend_id_val}|{name_val}\n")
-                        except requests.exceptions.RequestException:
-                            continue
-                        except json.JSONDecodeError:
-                            continue
-                        except KeyboardInterrupt:
-                            break
-                except KeyboardInterrupt:
-                    pass
-        except requests.exceptions.RequestException as e:
-            print(f"{RED}Error fetching birthday list: {e}{WHITE}")
-        except json.JSONDecodeError:
-            print(f"{RED}Error decoding birthday list response.{WHITE}")
-        finally:
-            if 'birthday_file' in locals() and not birthday_file.closed:
-                birthday_file.close()
-        print(WHITE + LINES_SEPARATOR)
-        print(
-            f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(birthday_list))} retrieved as: {YELLOW}{DUMP_BIRTHDAY_TXT}"
-        )
-        getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        return
+        self._dump_field("birthday", DUMP_BIRTHDAY_TXT, "Birthday")
 
     def dump_location(self):
         """Dumps locations from the friend list."""
-        token = self.user_token()
-        if not token:
-            return
-        try:
-            req = requests.get(
-                GRAPH_FB_URL.format(
-                    f"/v3.2/me/friends/?fields=name,email&access_token={token}&limit=5000"
-                ),
-                headers=HEADERS,
-                timeout=10,
-            )
-            req.raise_for_status()
-            res_data = req.json()
-            location_list = []
-            print(WHITE + LINES_SEPARATOR)
-            with open(DUMP_LOCATION_TXT, "w", encoding="utf-8") as location_file:
-                try:
-                    for data_item_info in res_data.get("data", []):
-                        try:
-                            req_friend_loc = requests.get(
-                                GRAPH_FB_URL.format(
-                                    f"/{data_item_info['id']}?access_token={token}&limit=5000"
-                                ),
-                                headers=HEADERS,
-                                timeout=10,
-                            )
-                            req_friend_loc.raise_for_status()
-                            res_friend_loc_data = req_friend_loc.json()
-                            name_val = res_friend_loc_data.get("name")
-                            loc_val = res_friend_loc_data.get("location", {}).get("name")
-                            friend_id_val = res_friend_loc_data.get("id")
-                            if name_val and loc_val and friend_id_val:
-                                location_file.write(f"{loc_val}|{friend_id_val}|{name_val}\n")
-                                location_list.append(loc_val)
-                                print(
-                                    f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Location: {loc_val} {RED}->{WHITE} {name_val}"
-                                )
-                        except requests.exceptions.RequestException:
-                            continue
-                        except json.JSONDecodeError:
-                            continue
-                        except KeyboardInterrupt:
-                            break
-                except KeyboardInterrupt:
-                    pass
-        except requests.exceptions.RequestException as e:
-            print(f"{RED}Error fetching location list: {e}{WHITE}")
-        except json.JSONDecodeError:
-            print(f"{RED}Error decoding location list response.{WHITE}")
-        finally:
-            if 'location_file' in locals() and not location_file.closed:
-                location_file.close()
-        print(WHITE + LINES_SEPARATOR)
-        print(
-            f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(location_list))} retrieved as: {YELLOW}{DUMP_LOCATION_TXT}"
-        )
-        getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-        return
+        self._dump_field("location.name", DUMP_LOCATION_TXT, "Location")
 
 
 def settings():
