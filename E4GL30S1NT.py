@@ -150,8 +150,11 @@ _RECON_LOCK = threading.Lock()
 _EMAIL_LOCK = threading.Lock()
 
 HEADERS = {
-    "User-Agent": "Opera/9.80 (J2ME/MIDP; Opera Mini/9.80 (S60; SymbOS; Opera Mobi/23.334; U; id) Presto/2.5.25 Version/10.54"
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
 }
+_session = requests.Session()
+_session.headers.update(HEADERS)
+
 LOGO = f"""{BLUE}
       .---.        .-----------
      /     \\  __  /    ------
@@ -263,7 +266,7 @@ def display_progress(iteration, total, text=""):
 def send_req(url, username):
     """Sends a request to a given URL and prints the status code."""
     try:
-        req = requests.get(url.format(username), headers=HEADERS, timeout=10)
+        req = _session.get(url.format(username), headers=HEADERS, timeout=10)
         req.raise_for_status()
     except requests.exceptions.HTTPError as http_err:
         logger.warning("HTTP error for %s: %s", url.format(username), http_err)
@@ -308,7 +311,7 @@ def send_req(url, username):
 def check_email(email, api, total, ok_list, output_file):
     global CHECK_EMAIL_NUM
     try:
-        response = requests.get(
+        response = _session.get(
             REALEMAIL_API_URL,
             params={"email": email},
             headers={"Authorization": "Bearer " + api},
@@ -399,7 +402,7 @@ def iplocation():
         return
     print(WHITE + LINES_SEPARATOR)
     try:
-        req = requests.get(
+        req = _session.get(
             IPINFO_API_URL.format(ip_address), timeout=10
         ).json()
         ip_info = f"IP: {req.get('ip', '')}"
@@ -439,7 +442,7 @@ def infoga(option):
             return
     print(WHITE + LINES_SEPARATOR)
     try:
-        req = requests.get(
+        req = _session.get(
             API_HACKERTARGET.format(option, target), stream=True, timeout=10
         )
         for res_line in req.iter_lines():
@@ -467,7 +470,7 @@ def phoneinfo():
     print(WHITE + LINES_SEPARATOR)
     api_url = f"{VERIPHONE_API_BASE_URL}?phone={urllib.parse.quote(phone_number.strip())}&key={api_key}"
     try:
-        req = requests.get(api_url, timeout=10)
+        req = _session.get(api_url, timeout=10)
         req.raise_for_status()
         res = req.json()
         for info_key, info_value in res.items():
@@ -509,7 +512,7 @@ def godorker():
         dork_file.write(f"# Dork: {dork_query}\n\n")
         for result_url in urls_found:
             try:
-                req = requests.get(result_url, headers=HEADERS, timeout=10)
+                req = _session.get(result_url, headers=HEADERS, timeout=10)
                 req.raise_for_status()
                 res_content = fromstring(req.content)
                 title_text = res_content.findtext(".//title")
@@ -699,7 +702,7 @@ def bypass_bitly():
         print(f"{RED}Invalid URL. Must start with http:// or https://{WHITE}")
         return
     try:
-        bitly_code_response = requests.get(
+        bitly_code_response = _session.get(
             bitly_url_input, allow_redirects=False, timeout=10
         )
         soup_parser = BeautifulSoup(bitly_code_response.text, "lxml")
@@ -727,7 +730,7 @@ def github_lookup():
         return
     print(WHITE)
     try:
-        req = requests.get(
+        req = _session.get(
             GITHUB_API_URL.format(github_user), timeout=10
         )
         res_data = req.json()
@@ -1104,7 +1107,7 @@ def temp_mail_gen():
             }
             print(f"Disposing your email address - {current_mail_address}\n")
             try:
-                requests.post(delete_url, data=delete_data, timeout=10)
+                _session.post(delete_url, data=delete_data, timeout=10)
             except requests.exceptions.RequestException as e_delete:
                 print(f"{RED}Error deleting email: {e_delete}{WHITE}")
 
@@ -1116,7 +1119,7 @@ def temp_mail_gen():
 
         check_link = f"{temp_api_url}?action=getMessages&login={extracted_details[0]}&domain={extracted_details[1]}"
         try:
-            response_data = requests.get(check_link, timeout=10).json()
+            response_data = _session.get(check_link, timeout=10).json()
             if len(response_data) != 0:
                 mail_ids = [
                     item.get("id") for item in response_data if item.get("id")
@@ -1130,7 +1133,7 @@ def temp_mail_gen():
                     if mail_item_id not in MAIL_PRINTATE:
                         MAIL_PRINTATE.append(mail_item_id)
                         read_msg_link = f"{temp_api_url}?action=readMessage&login={extracted_details[0]}&domain={extracted_details[1]}&id={mail_item_id}"
-                        msg_content_response = requests.get(read_msg_link, timeout=10).json()
+                        msg_content_response = _session.get(read_msg_link, timeout=10).json()
                         mail_sender = msg_content_response.get("from", "")
                         mail_subject = msg_content_response.get("subject", "")
                         mail_date = msg_content_response.get("date", "")
@@ -1162,7 +1165,7 @@ def temp_mail_gen():
         )
         _new_mail_url_local = f"{temp_api_url}?login={custom_email_name}&domain={chosen_domain}"
         try:
-            requests.get(_new_mail_url_local, timeout=10)
+            _session.get(_new_mail_url_local, timeout=10)
         except requests.exceptions.RequestException as e_register:
             print(f"{RED}Error registering temporary email: {e_register}{WHITE}")
             return
