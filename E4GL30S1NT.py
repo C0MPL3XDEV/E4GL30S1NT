@@ -3,6 +3,7 @@
 # Authors: C0MPL3XDEV & JProgrammer-it
 # Last update: 21/09/2021 - version 1.1
 """Simple Information Gathering Toolkit"""
+import click
 import ipaddress
 import json
 import os
@@ -980,8 +981,8 @@ def settings():
     / /     \\(  )/    -----
    //////   ' \\/ `   ---            ┏───────────────────────────────┓
   //// / // :    : ---              │     WELCOME TO E4GL30S1NT     │
- // /   /  /`    '--                │    {LIGHT_RED}https://c0mpl3x.web.app/{RED}   │
-//          //..\\                   │ {LIGHT_RED}https://JProgrammerIt.web.app{RED} │
+ // /   /  /`    '--                │    {LIGHT_RED}https://carminedev.it{RED}   │
+//          //..\\                   │   {LIGHT_RED}https://sgrodolix.website{RED} │
        ====UU====UU====             └───────────────────────────────┘
            '//||\\`
              ''``
@@ -1149,76 +1150,151 @@ def temp_mail_gen():
             delete_temp_mail_nested(current_mail_address_local, _new_mail_url_local)
         sys.exit()
 
+def _run_update() -> None:
+    if which("termux-setup-storage"):
+        script_path = "$PREFIX/bin/E4GL30S1NT"
+    elif os.path.isdir("/usr/local/bin"):
+        script_path = "/usr/local/bin/E4GL30S1NT"
+    else:
+        script_path = "/usr/bin/E4GL30S1NT"
+    update_url = "https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py"
+    try:
+        print(f"{YELLOW}Updating script at {script_path}...{WHITE}")
+        subprocess.run(["wget", update_url, "-O", script_path], check=True, timeout=60)
+        subprocess.run(["chmod", "+x", script_path], check=True, timeout=10)
+        print(f"{BLUE}>{WHITE} Script updated successfully.")
+    except subprocess.CalledProcessError as e:
+        print(f"{RED}Update failed: {e}{WHITE}")
+    except FileNotFoundError:
+        print(f"{RED}wget or chmod command not found. Install them and retry.{WHITE}")
+    except subprocess.TimeoutExpired:
+        print(f"{RED}Update timed out. Please check your internet connection and try again.{WHITE}")
+
+@click.group(
+    invoke_without_command=True,
+    context_settings=dict(help_option_names=["-h", "--help"]),
+)
+@click.pass_context
+def main(ctx: click.Context) -> None:
+    """E4GL30S1NT — Simple Information Gathering Toolkit.
+
+    Run without arguments to enter the interactive menu.
+    """
+    if ctx.invoked_subcommand is None:
+        mainmenu()
+
+@main.command("userrecon")
+def cmd_userrecon() -> None:
+    """Username reconnaissance across 71 platforms."""
+    print(LOGO)
+    userrecon()
+
+@main.command("facedumper")
+def cmd_facedumper() -> None:
+    """Dump Facebook friend list information."""
+    print(LOGO)
+    Facebook.facedumper()
+
+@main.command("mailfinder")
+def cmd_mailfinder() -> None:
+    """Find email addresses from a domain."""
+    print(LOGO)
+    mailfinder()
+
+@main.command("godorker")
+def cmd_godorker() -> None:
+    """Google dorking with result scraping."""
+    print(LOGO)
+    godorker()
+
+
+@main.command("phoneinfo")
+def cmd_phoneinfo() -> None:
+    """Phone number information and validation."""
+    print(LOGO)
+    phoneinfo()
+
+
+@main.command("dns")
+def cmd_dns() -> None:
+    """DNS lookup for a domain or IP."""
+    print(LOGO)
+    infoga("dnslookup")
+
+
+@main.command("whois")
+def cmd_whois() -> None:
+    """WHOIS lookup for a domain."""
+    print(LOGO)
+    infoga("whois")
+
+
+@main.command("subnet")
+def cmd_subnet() -> None:
+    """Subnet / network calculator."""
+    print(LOGO)
+    infoga("subnetcalc")
+
+
+@main.command("hostfinder")
+def cmd_hostfinder() -> None:
+    """Find hosts for a domain."""
+    print(LOGO)
+    infoga("hostsearch")
+
+
+@main.command("dnsfinder")
+def cmd_dnsfinder() -> None:
+    """DNS finder via MTR."""
+    print(LOGO)
+    infoga("mtr")
+
+
+@main.command("riplookup")
+def cmd_riplookup() -> None:
+    """Reverse IP lookup."""
+    print(LOGO)
+    infoga("reverseiplookup")
+
+
+@main.command("iplocation")
+def cmd_iplocation() -> None:
+    """IP address geolocation."""
+    print(LOGO)
+    iplocation()
+
+
+@main.command("bitly")
+def cmd_bitly() -> None:
+    """Resolve and bypass Bitly short URLs."""
+    print(LOGO)
+    bypass_bitly()
+
+
+@main.command("github")
+def cmd_github() -> None:
+    """GitHub user profile lookup."""
+    print(LOGO)
+    github_lookup()
+
+
+@main.command("tempmail")
+def cmd_tempmail() -> None:
+    """Generate a temporary email and monitor inbox."""
+    print(LOGO)
+    temp_mail_gen()
+
+
+@main.command("update")
+def cmd_update() -> None:
+    """Update E4GL30S1NT to the latest version."""
+    _run_update()
+
+
+@main.command("settings")
+def cmd_settings() -> None:
+    """Edit API keys and configuration."""
+    settings()
 
 if __name__ == "__main__":
-    main_args = sys.argv
-    if len(main_args) == 1:
-        mainmenu()
-    elif len(main_args) == 2:
-        command_arg = main_args[1]
-        if command_arg == "update":
-            SCRIPT_PATH = ""
-            if which("termux-setup-storage"):
-                SCRIPT_PATH = "$PREFIX/bin/E4GL30S1NT"
-            elif os.path.isdir("/usr/local/bin/"):
-                SCRIPT_PATH = "/usr/local/bin/E4GL30S1NT"
-            else:
-                SCRIPT_PATH = "/usr/bin/sigit"
-            update_url = "https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py"
-            try:
-                print(f"{YELLOW}Attempting to update script at {SCRIPT_PATH}...{WHITE}")
-                subprocess.run(["wget", update_url, "-O", SCRIPT_PATH], check=True, timeout=60)
-                subprocess.run(["chmod", "+x", SCRIPT_PATH], check=True, timeout=10)
-                print(f"{BLUE}>{WHITE} wrapper script has been updated")
-            except subprocess.CalledProcessError as e_update_script:
-                print(f"{RED}Error updating script: {e_update_script}{WHITE}")
-            except FileNotFoundError:
-                print(f"{RED}Error: wget or chmod command not found. Please ensure they are installed and in your PATH.{WHITE}")
-            except subprocess.TimeoutExpired:
-                print(f"{RED}Update process timed out.{WHITE}")
-
-        elif command_arg in ("settings", "configs"):
-            settings()
-        elif command_arg in (
-            "01", "1", "02", "2", "03", "3", "04", "4", "05", "5", "06", "6", "07", "7",
-            "08", "8", "09", "9", "10", "11", "12", "13", "14", "15"
-        ):
-            print(LOGO)
-            if command_arg in ("1", "01"):
-                userrecon()
-            elif command_arg in ("2", "02"):
-                Facebook.facedumper()
-            elif command_arg in ("3", "03"):
-                mailfinder()
-            elif command_arg in ("4", "04"):
-                godorker()
-            elif command_arg in ("5", "05"):
-                phoneinfo()
-            elif command_arg in ("6", "06"):
-                infoga("dnslookup")
-            elif command_arg in ("7", "07"):
-                infoga("whois")
-            elif command_arg in ("8", "08"):
-                infoga("subnetcalc")
-            elif command_arg in ("9", "09"):
-                infoga("hostsearch")
-            elif command_arg == "10":
-                infoga("mtr")
-            elif command_arg == "11":
-                infoga("reverseiplookup")
-            elif command_arg == "12":
-                iplocation()
-            elif command_arg == "13":
-                bypass_bitly()
-            elif command_arg == "14":
-                github_lookup()
-            elif command_arg == "15":
-                temp_mail_gen()
-        else:
-            sys.exit(
-                 RED + "* no command found for: " + main_args[1] + WHITE
-            )
-    else:
-        sys.exit(
-             RED + "* invalid number of arguments: " + str(len(main_args) - 1) + WHITE
-        )
+    main()
