@@ -6,7 +6,9 @@
 import click
 import ipaddress
 import json
+import logging
 import os
+from logging.handlers import RotatingFileHandler
 import random
 import re
 import socket
@@ -73,6 +75,30 @@ for _cfg_key, _env_var in _ENV_KEY_MAP.items():
     if _env_val:
         CONFIGS[_cfg_key] = _env_val
 
+LOG_PATH = os.path.join(CONFIG_DIR, "eagleosint.log")
+
+def _setup_logger() -> logging.Logger:
+    _logger = logging.getLogger("eagleosint")
+    if _logger.handlers:
+        return _logger
+    _logger.setLevel(logging.DEBUG)
+    try:
+        os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
+        _handler = RotatingFileHandler(
+            LOG_PATH, maxBytes=500_000, backupCount=2, encoding="utf-8"
+        )
+        _handler.setFormatter(logging.Formatter(
+            "%(asctime)s %(levelname)-8s %(funcName)s: %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        ))
+        _logger.addHandler(_handler)
+    except OSError as e:
+        print(f"[warn] Could not create log file at {LOG_PATH}: {e}")
+    return _logger
+
+logger = _setup_logger()
+logger.info("session started — E4GL30S1NT loaded")
+
 def _save_config():
     """Write CONFIGS atomically. Uses write-to-temp + os.replace() to prevent
        file corruption if the process is interrupted mid-write."""
@@ -80,6 +106,7 @@ def _save_config():
     with open(tmp_path, "w", encoding="utf-8") as tmp_file:
         json.dump(CONFIGS, tmp_file, indent=2)
     os.replace(tmp_path, CONFIG_PATH)
+    logger.debug("Config saved  to %s", CONFIG_PATH)
 
 HOME_DIR = os.getenv("HOME", "") # Provide a default for HOME_DIR
 COOKIE_FILENAME = ".cookies"
@@ -131,7 +158,7 @@ LOGO = f"""{BLUE}
     / /     \\(  )/    -----
    //////   ' \\/ `   ---            ┏───────────────────────────────┓
   //// / // :    : ---              │     WELCOME TO E4GL30S1NT     │
- // /   /  /`    '--                │     https://c0mpl3xdev.tk     │
+ // /   /  /`    '--                │     https://carminedev.it     │
 //          //..\\                  │ https://JProgrammerIt.web.app │
        ====UU====UU====             └───────────────────────────────┘
            '//||\\`
@@ -178,6 +205,7 @@ def mainmenu():
         try:
             cmd = input(f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} choose:{BLUE} ")
             if int(len(cmd)) < 6:
+                logger.info("command dispatched: %s", cmd.strip())
                 if cmd in ("exit", "Exit", "00", "0"):
                     sys.exit(RED + SPACE_PREFIX + "* Exiting !" + WHITE)
                 elif cmd in ("1", "01"):
@@ -238,15 +266,19 @@ def send_req(url, username):
         req = requests.get(url.format(username), headers=HEADERS, timeout=10)
         req.raise_for_status()
     except requests.exceptions.HTTPError as http_err:
+        logger.warning("HTTP error for %s: %s", url.format(username), http_err)
         print(f"{RED}HTTP error for {url.format(username)}: {http_err}{WHITE}")
         return
     except requests.exceptions.Timeout:
+        logger.debug("Timeout: %s", url.format(username))
         print(f"{YELLOW}Timeout for {url.format(username)}{WHITE}")
         return
     except requests.exceptions.TooManyRedirects:
+        logger.warning("Too many redirects: %s", url.format(username))
         print(f"{YELLOW}Too many redirects for {url.format(username)}{WHITE}")
         return
     except requests.exceptions.ConnectionError:
+        logger.debug("Connection error: %s", url.format(username))
         print(f"{YELLOW}Connection error for {url.format(username)}{WHITE}")
         return
 
