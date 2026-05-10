@@ -64,6 +64,23 @@ if not os.path.exists(CONFIG_PATH):
 with open(CONFIG_PATH, "r", encoding="utf-8") as config_file:
     CONFIGS = json.load(config_file)
 
+_ENV_KEY_MAP = {
+    "real-email-api-key": "E4GL30S1NT_REALEMAIL_KEY",
+    "veriphone-api-key":  "E4GL30S1NT_VERIPHONE_KEY",
+}
+for _cfg_key, _env_var in _ENV_KEY_MAP.items():
+    _env_val = os.getenv(_env_var)
+    if _env_val:
+        CONFIGS[_cfg_key] = _env_val
+
+def _save_config():
+    """Write CONFIGS atomically. Uses write-to-temp + os.replace() to prevent
+       file corruption if the process is interrupted mid-write."""
+    tmp_path = CONFIG_PATH + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as tmp_file:
+        json.dump(CONFIGS, tmp_file, indent=2)
+    os.replace(tmp_path, CONFIG_PATH)
+
 HOME_DIR = os.getenv("HOME", "") # Provide a default for HOME_DIR
 COOKIE_FILENAME = ".cookies"
 COOKIE_FILE = os.path.join(HOME_DIR, COOKIE_FILENAME) if HOME_DIR else ""
@@ -412,8 +429,7 @@ def phoneinfo():
             f":{BLUE} "
         )
         CONFIGS[VERIPHONE_API_CONFIG_KEY] = api_key
-        with open(CONFIG_PATH, "w", encoding="utf-8") as configs_file:
-            json.dump(CONFIGS, configs_file)
+        _save_config()
     if not phone_number:
         return
     print(WHITE + LINES_SEPARATOR)
@@ -533,8 +549,7 @@ def mailfinder():
                     f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter your api key (https://isitarealemail.com) :{BLUE} "
                 )
                 CONFIGS[REALEMAIL_API_CONFIG_KEY] = api_key
-                with open(CONFIG_PATH, "w", encoding="utf-8") as cf_file:
-                    json.dump(CONFIGS, cf_file)
+                _save_config()
             print(WHITE + LINES_SEPARATOR)
             threads = []
             global CHECK_EMAIL_NUM
@@ -1025,8 +1040,7 @@ def settings():
         f"{SPACE_PREFIX}{LIGHT_RED}>{RED} Insert the new value of {config_options[chosen_option]} :{LIGHT_RED} "
     )
     CONFIGS[config_options[chosen_option]] = new_setting_value
-    with open(CONFIG_PATH, "w", encoding="utf-8") as configs_file_to_write:
-        json.dump(CONFIGS, configs_file_to_write)
+    _save_config()
 
 
 def temp_mail_gen():
