@@ -130,22 +130,7 @@ def mainmenu():
 def settings():
     """Allows the user to change settings in the config file."""
     os.system("clear")
-    print(
-        f"""{RED}
-      .---.        .-----------
-     /     \\  __  /    ------
-    / /     \\(  )/    -----
-   //////   ' \\/ `   ---            ┏───────────────────────────────┓
-  //// / // :    : ---              │     WELCOME TO E4GL30S1NT     │
- // /   /  /`    '--                │    {LIGHT_RED}https://carminedev.it{RED}   │
-//          //..\\                   │   {LIGHT_RED}https://sgrodolix.website{RED} │
-       ====UU====UU====             └───────────────────────────────┘
-           '//||\\`
-             ''``
-  {LIGHT_RED}Simple Information Gathering Toolkit{WHITE}
-  {LIGHT_RED}Authors: {WHITE}{RED}@C0MPL3XDEV{LIGHT_RED} & {WHITE}{RED}@JProgrammer-it{WHITE}
-"""
-    )
+    print(LOGO)
     print(
         f"""\
          {WHITE}{BG_RED} \\033[1mSETTINGS CHANGER MODE {WHITE}

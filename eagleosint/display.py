@@ -27,7 +27,7 @@ LOGO = f"""{BLUE}
    //////   ' \\/ `   ---            ┏───────────────────────────────┓
   //// / // :    : ---              │     WELCOME TO E4GL30S1NT     │
  // /   /  /`    '--                │     https://carminedev.it     │
-//          //..\\                  │ https://JProgrammerIt.web.app │
+//          //..\\                   │     https://sgrodolix.website │
        ====UU====UU====             └───────────────────────────────┘
            '//||\\`
              ''``
