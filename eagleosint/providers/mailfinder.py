@@ -2,7 +2,7 @@
 import json
 import threading
 from getpass import getpass
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 from time import sleep
 
 import requests
@@ -127,30 +127,21 @@ def mailfinder():
                 CONFIGS[REALEMAIL_API_CONFIG_KEY] = api_key
                 save_config()
             print(WHITE + LINES_SEPARATOR)
-            threads = []
+
             global CHECK_EMAIL_NUM
             CHECK_EMAIL_NUM = 0
+            total = len(email_providers) * len(user_variations)
 
-            for user_variation in user_variations:
-                for provider_domain in email_providers:
-                    email_address = f"{user_variation}@{provider_domain}"
-                    thread = Thread(
-                        target=check_email,
-                        args=(
-                            email_address,
-                            api_key,
-                            len(email_providers) * len(user_variations),
-                            valid_emails,
-                            mail_file,
-                        ),
-                    )
-                    threads.append(thread)
-                    thread.start()
-                    sleep(0.20)
-
-            for t_item in threads:
-                t_item.join()
-
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                for user_variation in user_variations:
+                    for provider_domain in email_providers:
+                        email_address = f"{user_variation}@{provider_domain}"
+                        executor.submit(
+                            check_email,
+                            email_address, api_key, total,
+                            valid_emails, mail_file
+                        )
+                        sleep(0.20)
             CHECK_EMAIL_NUM = 0
 
         except KeyboardInterrupt:

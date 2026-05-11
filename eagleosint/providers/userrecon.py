@@ -1,6 +1,6 @@
 ﻿import threading
 from getpass import getpass
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 from time import sleep
 
 import requests
@@ -112,15 +112,10 @@ def userrecon():
     ]
 
     print(WHITE + LINES_SEPARATOR)
-    threads = []
-    for site_url in url_list:
-        thread = Thread(target=send_req, args=(site_url, username_to_check))
-        threads.append(thread)
-        thread.start()
-        sleep(0.7)
-
-    for t_item in threads:
-        t_item.join()
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        for site_url in url_list:
+            executor.submit(send_req, site_url, username_to_check)
+            sleep(0.7)
 
     print()
     print(WHITE + LINES_SEPARATOR)
