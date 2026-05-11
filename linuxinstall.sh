@@ -1,47 +1,99 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-null="> /dev/null 2>&1"
 g="\033[1;32m"
 r="\033[1;31m"
 b="\033[1;34m"
+y="\033[1;33m"
 w="\033[0m"
 
-echo -e "$b> $w E4GL30SINT - Simple information gathering toolkit"
-echo -e "$b> $w Preparing to install dependencies..."
-sleep 3
+info()  { echo -e "${b}[>]${w} $*"; }
+ok()    { echo -e "${g}[✔]${w} $*"; }
+warn()  { echo -e "${y}[!]${w} $*"; }
+die()   { echo -e "${r}[✘]${w} $*" >&2; exit 1; }
 
-echo -e "$b> $w Installing package: $g libxml2 $w"
-sudo apt install libxml2 -y
+echo -e "${b}"
+cat <<'EOF'
+      .---.        .-----------
+     /     \  __  /    ------
+    / /     \(  )/    -----
+   //////   ' \/ `   ---
+  //// / // :    : ---
+ // /   /  /`    '--
+//          //..\
+       ====UU====UU====
+           '//||\`
+             ''``
+  E4GL30S1NT v2.0 — installer
+EOF
+echo -e "${w}"
 
-echo -e "$b> $w Installing package: $g libxslt $w"
-sudo apt install libxslt1.1 -y
-
-echo -e "$b> $w Installing package: $g python3 $w"
-sudo apt install python3 python-is-python3 -y
-
-echo -e "$b> $w Installing package: $g python3-pip $w"
-sudo apt install python3-pip -y
-
-echo -e "$b> $w Installing modules: $g lxml $w"
-sudo apt install python3-lxml python3-wheel -y
-
-echo -e "$b> $w Installing modules: $g requests $w"
-sudo apt install python3-requests -y
-
-echo -e "$b> $w Installing modules: $g BeautifulSoup $w"
-sudo apt install python3-bs4 -y
-
-echo -e "$b> $w Installing modules: $g tabulate $w"
-sudo apt install python3-tabulate -y
-
-echo -e "$b> $w Installing modules: $g pyperclip $w"
-if ! sudo apt install python3-pyperclip -y; then
-    echo -e "$r[!] apt install failed, trying pip3...$w"
-    pip3 install pyperclip
+# --- 1. Check OS -----------------------------------------------------------------------
+if ! command -v apt-get &>/dev/null; then
+  die "This script requires apt (Debian/Ubuntu/Kali). Use pip directly on other distros."
 fi
 
-echo -e "$b> $w Successfully installed dependencies"
+# -- 2. System packages -----------------------------------------------------------------
+info "Updating package lists..."
+sudo apt-get update -q
 
-sudo wget -q https://raw.githubusercontent.com/C0MPL3XDEV/E4GL3OS1NT/main/E4GL30S1NT.py -O /usr/local/bin/E4GL30S1NT && sudo chmod +x /usr/local/bin/E4GL30S1NT
+info "Installing system dependencies..."
+sudo apt-get install -y -q \
+    python3 python3-pip python3-venv \
+    libxml2 libxslt1.1 curl git
 
-echo -e "$b> $w Use command $g E4GL30S1NT $w to start the console"
+# --- 3. Python version check ----------------------------------------------------------
+PY_VER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PY_MAJOR=$(echo "$PY_VER" | cut -d. -f1)
+PY_MINOR=$(echo "$PY_VER" | cut -d. -f2)
+
+if [[ "$PY_MAJOR" -lt 3 || ( "$PY_MAJOR" -eq 3 && "$PY_MINOR" -lt 11 ) ]]; then
+  die "Python 3.11+ is required. Found: $PY_VER"
+fi
+ok "Python $PY_VER detected"
+
+# --- 4. Clone or update repo ---------------------------------------------------------
+INSTALL_DIR="$HOME/.local/share/eagleosint"
+
+if [[ -d "$INSTALL_DIR/.git" ]]; then
+  info "Updating existing installation at $INSTALL_DIR..."
+  git -C "$INSTALL_DIR" pull --ff-only
+else
+  info "Cloning repository to $INSTALL_DIR..."
+  git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git "$INSTALL_DIR"
+fi
+
+# --- 5. Virtual Env ------------------------------------------------------------------
+VENV_DIR="$INSTALL_DIR/.venv"
+if [[ ! -d "$VENV_DIR" ]]; then
+  info "Creating virtual environment..."
+  python3 -m venv "$VENV_DIR"
+fi
+ok "Virtual environment ready"
+
+# --- 6. Install package -------------------------------------------------------------
+info "Install eagleosint..."
+"$VENV_DIR/bin/pip" install --quiet --upgrade pip
+"$VENV_DIR/bin/pip" install --quiet "$INSTALL_DIR"
+ok "Package installed"
+
+# --- 7. Launcher script -------------------------------------------------------------
+LAUNCHER="/usr/local/bin/eagleosint"
+sudo tee "$LAUNCHER" > /dev/null <<LAUNCHER
+#!/usr/bin/env bash
+exec "$VENV_DIR/bin/eagleosint" "\$@"
+LAUNCHER
+sudo chmod +x "$LAUNCHER"
+
+sudo ln -sf "$LAUNCHER" /usr/local/bin/e4gl
+ok "Launchers created: eagleosint, e4gl"
+
+# ── 8. Done ───────────────────────────────────────────────────────────────────
+echo ""
+ok "Installation complete!"
+info "Run ${g}eagleosint${w} or ${g}e4gl${w} to start"
+info "Run ${g}eagleosint --help${w} to see all subcommands"
+info ""
+warn "API keys are stored in ~/.config/E4GL30S1NT/config.json"
+warn "You will be prompted for them on first use, or set them via:"
+info "  ${g}eagleosint settings${w}"
