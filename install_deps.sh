@@ -1,22 +1,50 @@
-#!/bin/bash
-# This script installs runtime dependencies and specified type hints.
+#!/usr/bin/env bash
+# Developer setup — installs the package in editable mode with test dependencies.
+set -euo pipefail
 
-echo "Installing runtime dependencies from requirements.txt..."
-if [ -f "requirements.txt" ]; then
-    pip3 install -r requirements.txt
-else
-    echo "ERROR: requirements.txt not found!"
-    exit 1
+g="\033[1;32m"
+r="\033[1;31m"
+b="\033[1;34m"
+w="\033[0m"
+
+info() { echo -e "${b}[>]${w} $*"; }
+ok()   { echo -e "${g}[✔]${w} $*"; }
+die()  { echo -e "${r}[✘]${w} $*" >&2; exit 1; }
+
+# ── Python check ──────────────────────────────────────────────────────────────
+PY_VER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+PY_MAJOR=$(echo "$PY_VER" | cut -d. -f1)
+PY_MINOR=$(echo "$PY_VER" | cut -d. -f2)
+
+if [[ "$PY_MAJOR" -lt 3 || ( "$PY_MAJOR" -eq 3 && "$PY_MINOR" -lt 11 ) ]]; then
+    die "Python 3.11+ required. Found: $PY_VER"
+fi
+ok "Python $PY_VER"
+
+# ── Virtual environment ───────────────────────────────────────────────────────
+if [[ ! -d ".venv" ]]; then
+    info "Creating .venv..."
+    python3 -m venv .venv
 fi
 
-echo ""
-echo "Installing user-specified type hints (types-botocore, types-boto3) and checking for others with mypy..."
-pip3 install types-botocore types-boto3
+source .venv/bin/activate
+info "Virtual environment: $(which python)"
 
-# Running mypy to install types for E4GL30S1NT.py
-# This might download additional type stubs if mypy deems them necessary for the script.
-mypy --install-types --non-interactive E4GL30S1NT.py
+# ── Install in editable mode with dev extras ──────────────────────────────────
+info "Installing eagleosint[dev] in editable mode..."
+pip install --quiet --upgrade pip
+pip install --quiet -e ".[dev]"
+ok "Dependencies installed"
+
+# ── Verify entry points ───────────────────────────────────────────────────────
+info "Verifying entry points..."
+eagleosint --help > /dev/null && ok "eagleosint CLI works"
+e4gl --help       > /dev/null && ok "e4gl alias works"
+
+# ── Run tests ─────────────────────────────────────────────────────────────────
+info "Running test suite..."
+pytest -v --tb=short
+ok "All tests passed"
 
 echo ""
-echo "Dependency installation process complete."
-echo "Note: If mypy reported installing new stubs, you might want to re-run static analysis or type checking on your environment."
+ok "Dev setup complete. Activate with: source .venv/bin/activate"

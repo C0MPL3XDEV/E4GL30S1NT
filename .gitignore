@@ -1,0 +1,31 @@
+# Runtime config (contains API keys)
+configs/config.json
+
+# Generated result files
+result_godorker.txt
+result_mailfinder.txt
+dump_idfriends.txt
+dump_email.txt
+dump_phone.txt
+dump_birthday.txt
+dump_location.txt
+All\ Mails/
+
+# Security scan reports
+bandit_report*.json
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS artifacts
+.DS_Store
+Thumbs.db

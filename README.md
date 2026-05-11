@@ -1,88 +1,263 @@
 <h1 align="center">E4GL30S1NT</h1>
 
-<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/imageonline-co-roundcorner.png">
 <p align="center">
-<a href="https://discord.gg/Vy8C724XWV"><img src="https://discordapp.com/api/guilds/437716353584070677/widget.png?style=shield" alt="Discord Server"></a>
+  <img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/imageonline-co-roundcorner.png" alt="E4GL30S1NT logo">
+</p>
 
+<p align="center">
+  <a href="https://discord.gg/Vy8C724XWV">
+    <img src="https://discordapp.com/api/guilds/437716353584070677/widget.png?style=shield" alt="Discord">
+  </a>
+  &nbsp;
+  <img src="https://img.shields.io/badge/version-2.0.0-green?style=for-the-badge" alt="Version">
+  &nbsp;
+  <img src="https://img.shields.io/badge/python-3.11+-blue?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  &nbsp;
+  <img src="https://img.shields.io/badge/license-GPL--3.0-red?style=for-the-badge" alt="License">
+</p>
 
-<br>
+<p align="center">
+  <strong>Simple Information Gathering Toolkit</strong><br>
+  A modular OSINT CLI — username recon, Facebook dumping, email discovery, phone lookup, network analysis, and more.
+</p>
 
-[![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+---
 
+## Features
 
-<img title="E4GL30S1NT" src="https://img.shields.io/badge/CODENAME%20-E4GL30S1NT-E4GL30S1NT?colorA=grey&colorB=green&style=for-the-badge"> <img title="E4GL30S1NT" src="https://img.shields.io/badge/VERSION%20-1.1-SCRIPT?colorA=grey&colorB=green&style=for-the-badge"> <img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white">
-<img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white"/>
+| Command | Description |
+|---|---|
+| `userrecon` | Username reconnaissance across 71 social platforms |
+| `facedumper` | Dump Facebook friend list (IDs, emails, phones, birthdays, locations) |
+| `mailfinder` | Discover email addresses from a person's name |
+| `godorker` | Google dorking with automatic result scraping |
+| `phoneinfo` | Phone number validation and carrier info |
+| `dns` | DNS lookup for a domain or IP |
+| `whois` | WHOIS lookup for a domain |
+| `subnet` | Subnet / network calculator |
+| `hostfinder` | Find hosts for a domain |
+| `dnsfinder` | DNS finder via MTR |
+| `riplookup` | Reverse IP lookup |
+| `iplocation` | IP address geolocation |
+| `bitly` | Resolve and bypass Bitly short URLs |
+| `github` | Dump GitHub user profile information |
+| `tempmail` | Generate a temporary email address and monitor inbox |
+| `settings` | Manage API keys and configuration |
+| `update` | Update E4GL30S1NT to the latest version |
 
+---
 
-<img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/blob/main/image/Screenshot_2.png">
+## Requirements
 
-### Features
-- ```userrecon```    - username reconnaissance
-- ```facedumper```   - dump facebook information
-- ```mailfinder``` - find email with specific name
-- ```godorker``` - dorking with google search
-- ```phoneinfo``` - phone number information
-- ```dnslookup``` - domain name system lookup
-- ```whoislookup``` - identify who is on domain
-- ```sublookup``` - sub networking lookup
-- ```hostfinder``` - find host domain
-- ```dnsfinder``` - find host domain name system
-- ```riplookup``` - reverse ip lookup
-- ```iplocation``` - ip to location tracker
-- ```Bitly Bypass``` - Bypass all bitly urls 
-- ```Github Lookup``` -  Dump GitHub information 
-- ```TempMail``` - Generate a Temp Mail and Mail Box 
+- Python **3.11+**
+- `curl` (used by `iplocation` to detect local IP)
+- `wget` (used by `update` command — Linux only)
+- API keys for two optional features (see [API Keys](#api-keys))
 
-### USE:
-  - For Put or Modify API KEY Type ```python3 E4GL30S1NT.py configs``` or edit configs/config.json
-  - For use ```phoneinfo``` you need a [Veriphone API key](https://veriphone.io/), if you don't have this key you can use this test key to test the tool: KEY: ```47703D994B174BACBDC5AD734CC381B4```
-  - For use ```mailfinder``` you need a [real-email API key](https://isitarealemail.com/), if you don't have this key you can use this test key to test the tool: KEY: ```0c6ad1fd-f753-4628-8c0a-7968e722c6c7```
+---
 
-- Installation on linux
+## Installation
+
+### Linux (Debian / Ubuntu / Kali)
+
 ```bash
-sudo apt-get install wget && wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/linuxinstall.sh && bash linuxinstall.sh
+wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/linuxinstall.sh
+bash linuxinstall.sh
 ```
 
-- Installation on termux
+The script will:
+1. Install system packages (`python3`, `python3-venv`, `libxml2`, `libxslt1.1`, `curl`, `git`)
+2. Clone the repository to `~/.local/share/eagleosint`
+3. Create a virtual environment and install the package
+4. Add `eagleosint` and `e4gl` launchers to `/usr/local/bin`
+
+### Manual (all platforms)
+
 ```bash
-pkg install wget && https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/install.sh && bash install.sh
+git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git
+cd E4GL30S1NT
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install .
 ```
-- Uninstallation
-- termux: ```rm -rf $PREFIX/bin/E4GL30S1NT```
-- linux  : ```rm -rf /usr/local/bin/E4GL30S1NT```
 
-## Setup and Dependencies
+### Verify installation
 
-To ensure all necessary Python packages and type stubs are installed for `E4GL30S1NT.py`, please run the provided shell script:
+```bash
+eagleosint --help
+```
 
-First, make sure the script is executable:
-\`\`\`bash
-chmod +x install_deps.sh
-\`\`\`
+---
 
-Then, run the script:
-\`\`\`bash
-./install_deps.sh
-\`\`\`
+## Usage
 
-This script will:
-1. Install core runtime libraries listed in `requirements.txt`.
-2. Install `types-botocore` and `types-boto3` as per user preference.
-3. Run `mypy --install-types` to fetch other necessary type stubs for `E4GL30S1NT.py`.
+### Interactive menu
 
-## Debugging
+```bash
+eagleosint
+# or
+e4gl
+```
 
-This script includes an example for using `debugpy` to debug its execution. To use it:
+### Direct subcommands
 
-1.  Ensure `debugpy` is installed. You can install it using pip:
-    \`\`\`bash
-    pip install debugpy
-    \`\`\`
-    (The `install_deps.sh` script also attempts to install type stubs via `mypy`, which might include `debugpy` if it's imported and type stubs are available).
-2.  In the `E4GL30S1NT.py` script, find the `if __name__ == "__main__":` block.
-3.  Uncomment the section related to `debugpy` setup.
-4.  Run the script. It will print a message and pause, waiting for a debugger to attach on port 5678 (or the configured port).
-5.  Attach your Python debugger (e.g., from VS Code, PyCharm) to the specified port.
+```bash
+eagleosint userrecon          # username recon
+eagleosint facedumper         # Facebook dump
+eagleosint mailfinder         # email finder
+eagleosint godorker           # Google dork
+eagleosint phoneinfo          # phone lookup
+eagleosint dns                # DNS lookup
+eagleosint whois              # WHOIS lookup
+eagleosint subnet             # subnet calculator
+eagleosint hostfinder         # host finder
+eagleosint dnsfinder          # DNS finder
+eagleosint riplookup          # reverse IP
+eagleosint iplocation         # IP geolocation
+eagleosint bitly              # Bitly bypass
+eagleosint github             # GitHub lookup
+eagleosint tempmail           # temporary email
+eagleosint settings           # edit config
+eagleosint update             # self-update
+```
 
-### Credits
-Copyright © 2023 by <a href="https://www.instagram.com/c0mpl3xdev/">@C0MPL3XDEV</a> <a href="https://github.com/PoulDev">@PoulDev</a>
+Each subcommand can also be invoked as `python -m eagleosint <command>`.
+
+---
+
+## API Keys
+
+Two tools require free API keys. You will be prompted on first use; keys are stored in `~/.config/E4GL30S1NT/config.json`.
+
+| Tool | Provider | Free tier |
+|---|---|---|
+| `mailfinder` | [isitarealemail.com](https://isitarealemail.com/) | Yes |
+| `phoneinfo` | [veriphone.io](https://veriphone.io/) | Yes |
+
+You can also set them via environment variables (no config file write needed):
+
+```bash
+export E4GL30S1NT_REALEMAIL_KEY="your-key-here"
+export E4GL30S1NT_VERIPHONE_KEY="your-key-here"
+```
+
+Or edit them interactively:
+
+```bash
+eagleosint settings
+```
+
+---
+
+## Configuration
+
+The config file is created automatically at first run:
+
+```
+~/.config/E4GL30S1NT/config.json
+```
+
+The log file is written to:
+
+```
+~/.config/E4GL30S1NT/eagleosint.log
+```
+
+Log rotation is automatic (max 500 KB, 2 backups kept).
+
+---
+
+## Uninstall
+
+**If installed via `linuxinstall.sh`:**
+
+```bash
+sudo rm /usr/local/bin/eagleosint /usr/local/bin/e4gl
+rm -rf ~/.local/share/eagleosint
+rm -rf ~/.config/E4GL30S1NT
+```
+
+**If installed manually via pip:**
+
+```bash
+pip uninstall eagleosint
+rm -rf ~/.config/E4GL30S1NT
+```
+
+---
+
+## Developer Setup
+
+```bash
+git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git
+cd E4GL30S1NT
+bash install_deps.sh
+```
+
+This will create a `.venv`, install in editable mode with test dependencies, and run the test suite.
+
+### Running tests manually
+
+```bash
+source .venv/bin/activate
+pytest -v
+```
+
+### Project structure
+
+```
+eagleosint/
+  cli.py             ← click group, menus, settings, update
+  config.py          ← paths, CONFIGS dict, logger, save_config()
+  display.py         ← ANSI colors, LOGO, display_progress()
+  session.py         ← shared requests.Session
+  providers/
+    bitly.py         ← bypass_bitly()
+    facebook.py      ← Facebook class (facedumper)
+    github.py        ← github_lookup()
+    godorker.py      ← godorker()
+    mailfinder.py    ← mailfinder(), check_email()
+    network.py       ← iplocation(), infoga()
+    phoneinfo.py     ← phoneinfo()
+    tempmail.py      ← temp_mail_gen()
+    userrecon.py     ← userrecon(), send_req()
+tests/               ← offline unit tests (pytest + pytest-mock)
+E4GL30S1NT.py        ← backward-compat shim
+pyproject.toml       ← package metadata and entry points
+```
+
+---
+
+## Disclaimer
+
+This tool is intended for **educational and authorized security research purposes only**. Always obtain explicit permission before gathering information about individuals or systems. The authors are not responsible for any misuse.
+
+---
+
+## Contributing
+
+1. Fork the repo and create a branch: `git checkout -b feat/your-feature`
+2. Install dev dependencies: `bash install_deps.sh`
+3. Make changes — one logical concern per commit
+4. Ensure tests pass: `pytest -v`
+5. Open a pull request against `main`
+
+**Guidelines**
+- Follow the existing module layout — new tools go in `eagleosint/providers/`
+- Every new provider must have a matching `tests/test_<name>.py`
+- No real network calls in tests — mock with `monkeypatch` or `unittest.mock`
+- Keep `E4GL30S1NT.py` as a shim only — no logic there
+
+---
+
+## CI/CD
+
+Every push and pull request runs the full test suite automatically via GitHub Actions.
+
+[![CI](https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml/badge.svg)](https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml)
+
+---
+
+## Credits
+
+Copyright © 2024 — [**@C0MPL3XDEV**](https://github.com/C0MPL3XDEV) & [**@JProgrammer-it**](https://github.com/JProgrammerIt)
