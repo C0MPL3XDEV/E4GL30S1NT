@@ -234,6 +234,30 @@ This tool is intended for **educational and authorized security research purpose
 
 ---
 
+## Contributing
+
+1. Fork the repo and create a branch: `git checkout -b feat/your-feature`
+2. Install dev dependencies: `bash install_deps.sh`
+3. Make changes — one logical concern per commit
+4. Ensure tests pass: `pytest -v`
+5. Open a pull request against `main`
+
+**Guidelines**
+- Follow the existing module layout — new tools go in `eagleosint/providers/`
+- Every new provider must have a matching `tests/test_<name>.py`
+- No real network calls in tests — mock with `monkeypatch` or `unittest.mock`
+- Keep `E4GL30S1NT.py` as a shim only — no logic there
+
+---
+
+## CI/CD
+
+Every push and pull request runs the full test suite automatically via GitHub Actions.
+
+[![CI](https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml/badge.svg)](https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml)
+
+---
+
 ## Credits
 
 Copyright © 2024 — [**@C0MPL3XDEV**](https://github.com/C0MPL3XDEV) & [**@JProgrammer-it**](https://github.com/JProgrammerIt)
