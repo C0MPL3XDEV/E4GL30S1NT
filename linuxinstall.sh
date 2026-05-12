@@ -99,29 +99,24 @@ else
   git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git "$INSTALL_DIR"
 fi
 
-# --- 5. Virtual Env ------------------------------------------------------------------
-VENV_DIR="$INSTALL_DIR/.venv"
-if [[ ! -d "$VENV_DIR" ]]; then
-  info "Creating virtual environment..."
-  python3 -m venv "$VENV_DIR"
+# --- 5. Install uv ------------------------------------------------------------------
+if ! command -v uv &>/dev/null; then
+    info "Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="$HOME/.local/bin:$PATH"
 fi
-ok "Virtual environment ready"
+ok "uv $(uv --version)"
 
 # --- 6. Install package -------------------------------------------------------------
-info "Install eagleosint..."
-"$VENV_DIR/bin/pip" install --quiet --upgrade pip
-"$VENV_DIR/bin/pip" install --quiet "$INSTALL_DIR"
+info "Installing eagleosint..."
+uv tool install "$INSTALL_DIR"
 ok "Package installed"
 
 # --- 7. Launcher script -------------------------------------------------------------
-LAUNCHER="/usr/local/bin/eagleosint"
-sudo tee "$LAUNCHER" > /dev/null <<LAUNCHER
-#!/usr/bin/env bash
-exec "$VENV_DIR/bin/eagleosint" "\$@"
-LAUNCHER
-sudo chmod +x "$LAUNCHER"
+UV_TOOL_BIN="$HOME/.local/bin"
 
-sudo ln -sf "$LAUNCHER" /usr/local/bin/e4gl
+sudo ln -sf "$UV_TOOL_BIN/eagleosint" /usr/local/bin/eagleosint
+sudo ln -sf "$UV_TOOL_BIN/e4gl"       /usr/local/bin/e4gl
 ok "Launchers created: eagleosint, e4gl"
 
 # ── 8. Done ───────────────────────────────────────────────────────────────────
