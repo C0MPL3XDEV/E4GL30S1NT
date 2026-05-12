@@ -72,9 +72,9 @@
 
 ---
 
-## Installation
+### Linux
 
-### Linux (Debian / Ubuntu / Kali)
+Supports **Debian / Ubuntu / Kali** (`apt`), **Arch-based** (`pacman`), and **Fedora-based** (`dnf`) systems. The script auto-detects your package manager.
 
 ```bash
 wget https://raw.githubusercontent.com/C0MPL3XDEV/E4GL30S1NT/main/linuxinstall.sh
@@ -82,10 +82,11 @@ bash linuxinstall.sh
 ```
 
 The script will:
-1. Install system packages (`python3`, `python3-venv`, `libxml2`, `libxslt1.1`, `curl`, `git`)
-2. Clone the repository to `~/.local/share/eagleosint`
-3. Create a virtual environment and install the package
-4. Add `eagleosint` and `e4gl` launchers to `/usr/local/bin`
+1. Detect your package manager (apt / pacman / dnf)
+2. Install system packages (`python3`, `python3-venv`, `libxml2`, `libxslt1.1`, `curl`, `git`)
+3. Clone the repository to `~/.local/share/eagleosint`
+4. Create a virtual environment and install the package
+5. Add `eagleosint` and `e4gl` launchers to `/usr/local/bin`
 
 ### Manual (all platforms)
 
