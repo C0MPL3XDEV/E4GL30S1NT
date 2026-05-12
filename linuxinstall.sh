@@ -28,19 +28,55 @@ cat <<'EOF'
 EOF
 echo -e "${w}"
 
-# --- 1. Check OS -----------------------------------------------------------------------
-if ! command -v apt-get &>/dev/null; then
-  die "This script requires apt (Debian/Ubuntu/Kali). Use pip directly on other distros."
+# --- 1. Check OS ----------------------------------------------------------------------
+if command -v apt-get &>/dev/null; then
+  PM="apt"
+elif command -v pacman &>/dev/null; then
+  PM="pacman"
+elif command -v dnf &>/dev/null; then
+  PM="dnf"
+else
+  die "No supported package manager found (apt / pacman / dnf)."
 fi
+info "Detected package manager: ${g}$PM${w}"
+
+case "$PM" in
+  apt)
+      PKG_PYTHON="python3 python3-pip python3-venv"
+      PKG_LIBS="libxml2 libxslt1.1"
+      PKG_TOOLS="curl git"
+    ;;
+  pacman)
+      PKG_PYTHON="python python-pip"
+      PKG_LIBS="libxml2 libxslt"
+      PKG_TOOLS="curl git"
+      ;;
+  dnf)
+      PKG_PYTHON="python3 python3-pip"
+      PKG_LIBS="libxml2 libxslt"
+      PKG_TOOLS="curl git"
+      ;;
+esac
+
 
 # -- 2. System packages -----------------------------------------------------------------
+pkg_install() {
+  case "$PM" in
+    apt)  sudo apt-get install -y -q $* ;;
+    pacman)  sudo pacman -S --noconfirm --needed $* ;;
+    dnf)  sudo dnf install -y -q $* ;;
+  esac
+}
+
 info "Updating package lists..."
-sudo apt-get update -q
+case "$PM" in
+  apt) sudo apt-get update -q ;;
+  pacman) sudo pacman -Sy --noconfirm ;;
+  dnf) sudo dnf check-update -q || true ;;
+esac
 
 info "Installing system dependencies..."
-sudo apt-get install -y -q \
-    python3 python3-pip python3-venv \
-    libxml2 libxslt1.1 curl git
+pkg_install $PKG_PYTHON $PKG_LIBS $PKG_TOOLS
 
 # --- 3. Python version check ----------------------------------------------------------
 PY_VER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")

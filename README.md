@@ -17,6 +17,22 @@
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/github/stars/C0MPL3XDEV/E4GL30S1NT?style=social" alt="Stars">
+  &nbsp;
+  <img src="https://img.shields.io/github/forks/C0MPL3XDEV/E4GL30S1NT?style=social" alt="Forks">
+  &nbsp;
+  <img src="https://img.shields.io/github/issues/C0MPL3XDEV/E4GL30S1NT?color=yellow" alt="Issues">
+  &nbsp;
+  <img src="https://img.shields.io/github/last-commit/C0MPL3XDEV/E4GL30S1NT?color=blue" alt="Last Commit">
+  &nbsp;
+  <img src="https://img.shields.io/github/languages/code-size/C0MPL3XDEV/E4GL30S1NT" alt="Code size">
+  &nbsp;
+  <a href="https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml">
+    <img src="https://github.com/C0MPL3XDEV/E4GL30S1NT/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+</p>
+
+<p align="center">
   <strong>Simple Information Gathering Toolkit</strong><br>
   A modular OSINT CLI — username recon, Facebook dumping, email discovery, phone lookup, network analysis, and more.
 </p>
@@ -258,6 +274,16 @@ Every push and pull request runs the full test suite automatically via GitHub Ac
 
 ---
 
+## Contributors
+
+<a href="https://github.com/C0MPL3XDEV/E4GL30S1NT/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=C0MPL3XDEV/E4GL30S1NT" alt="Contributors"/>
+</a>
+
+Want your name here? See [Contributing](#contributing).
+
+---
+
 ## Credits
 
-Copyright © 2024 — [**@C0MPL3XDEV**](https://github.com/C0MPL3XDEV) & [**@JProgrammer-it**](https://github.com/JProgrammerIt)
+Copyright © 2024 — [**@C0MPL3XDEV**](https://github.com/C0MPL3XDEV) & [**@PoulDev**](https://github.com/PoulDev)
