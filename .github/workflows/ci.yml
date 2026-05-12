@@ -16,12 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v3
         with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-      - name: Install
-        run: pip install -e ".[dev]"
+          enable-cache: true
+
+      - name: Set Python version
+        run: uv python pin ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: uv sync --dev
 
       - name: Test
-        run: pytest -v --tb=short
+        run: uv run pytest -v --tb=short

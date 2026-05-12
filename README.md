@@ -90,12 +90,13 @@ The script will:
 
 ### Manual (all platforms)
 
+### Manual (all platforms)
+
 ```bash
 git clone https://github.com/C0MPL3XDEV/E4GL30S1NT.git
 cd E4GL30S1NT
-python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install .
+curl -LsSf https://astral.sh/uv/install.sh | sh   # skip if uv already installed
+uv tool install .
 ```
 
 ### Verify installation
@@ -254,7 +255,7 @@ This tool is intended for **educational and authorized security research purpose
 ## Contributing
 
 1. Fork the repo and create a branch: `git checkout -b feat/your-feature`
-2. Install dev dependencies: `bash install_deps.sh`
+2. Install dev dependencies: `bash install_deps.sh` (requires [uv](https://docs.astral.sh/uv/))
 3. Make changes — one logical concern per commit
 4. Ensure tests pass: `pytest -v`
 5. Open a pull request against `main`

@@ -29,3 +29,8 @@ env/
 # OS artifacts
 .DS_Store
 Thumbs.db
+# UV artifact
+.python-version
+
+build/
+dist/
