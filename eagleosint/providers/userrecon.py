@@ -12,11 +12,14 @@ from eagleosint.display import (
 )
 from eagleosint.session import HEADERS, session as _session
 
-USER_RECON_NUM = 0
-USER_RECON_WORKING = 0
-_RECON_LOCK = threading.Lock()
+class _State:
+    __slots__ = ("num", "working", "lock")
+    def __init__(self):
+        self.num = 0
+        self.working = 0
+        self.lock = threading.Lock()
 
-def send_req(url, username):
+def send_req(url, username, state):
     """Sends a request to a given URL and prints the status code."""
     try:
         req = _session.get(url.format(username), headers=HEADERS, timeout=10)
@@ -38,33 +41,23 @@ def send_req(url, username):
         print(f"{YELLOW}Connection error for {url.format(username)}{WHITE}")
         return
 
-    global USER_RECON_NUM, USER_RECON_WORKING
-    if req.status_code == 200:
-        color_code = GREEN
-    elif req.status_code == 404:
-        color_code = RED
-    else:
-        color_code = YELLOW
+    color_code = GREEN if req.status_code == 200 else (RED if req.status_code == 404 else YELLOW)
 
-    with _RECON_LOCK:
-        USER_RECON_NUM += 1
+    with state.lock:
+        state.num += 1
         if req.status_code == 200:
-            USER_RECON_WORKING += 1
-        user_recon_num_local = USER_RECON_NUM
-        user_recon_working_local = USER_RECON_WORKING
+            state.working += 1
+        num = state.num
+        working = state.working
 
-    display_progress(user_recon_num_local, 71, f"FOUND: {user_recon_working_local}")
+    display_progress(num, 71, f"FOUND: {working}")
     print(
         f"  {SPACE_PREFIX}{BLUE}[{color_code}{req.status_code}{BLUE}] "
-        f"{user_recon_num_local}/71 {WHITE}{url.format(username)}"
+        f"{num}/71 {WHITE}{url.format(username)}"
     )
 
 def userrecon():
     """Performs username reconnaissance across various platforms."""
-    global USER_RECON_NUM, USER_RECON_WORKING
-    USER_RECON_NUM = 0
-    USER_RECON_WORKING = 0
-
     username_to_check = input(
         f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter username:{BLUE} "
     ).lower()
@@ -111,10 +104,11 @@ def userrecon():
         "http://www.zone-h.org/archive/notifier={}",
     ]
 
+    state = _State()
     print(WHITE + LINES_SEPARATOR)
     with ThreadPoolExecutor(max_workers=20) as executor:
         for site_url in url_list:
-            executor.submit(send_req, site_url, username_to_check)
+            executor.submit(send_req, site_url, username_to_check, state)
             sleep(0.7)
 
     print()
