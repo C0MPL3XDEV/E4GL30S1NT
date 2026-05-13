@@ -17,12 +17,14 @@ from eagleosint.session import session as _session
 
 REALEMAIL_API_URL = "https://isitarealemail.com/api/email/validate"
 
-CHECK_EMAIL_NUM = 0
-_EMAIL_LOCK = threading.Lock()
+class _State:
+    __slots__ = ("num", "lock")
+    def __init__(self):
+        self.num = 0
+        self.lock = threading.Lock()
 
 
-def check_email(email, api, total, ok_list, output_file):
-    global CHECK_EMAIL_NUM
+def check_email(email, api, total, ok_list, output_file, state):
     try:
         response = _session.get(
             REALEMAIL_API_URL,
@@ -38,9 +40,9 @@ def check_email(email, api, total, ok_list, output_file):
             try:
                 status_val = response.json().get("status", "unknown")
             except json.JSONDecodeError:
-                with _EMAIL_LOCK:
-                    CHECK_EMAIL_NUM += 1
-                    current_count = CHECK_EMAIL_NUM
+                with state.lock:
+                    state.num += 1
+                    current_count = state.num
                 print(
                     f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
                     f"{current_count}/{total}{WHITE} Status: {RED}API "
@@ -61,9 +63,9 @@ def check_email(email, api, total, ok_list, output_file):
             color_code = RED
             back_color_code = BG_RED
 
-        with _EMAIL_LOCK:
-            CHECK_EMAIL_NUM += 1
-            current_count = CHECK_EMAIL_NUM
+        with state.lock:
+            state.num += 1
+            current_count = state.num
             if status_val == "valid":
                 ok_list.append(email)
                 output_file.write(email + "\n")
@@ -75,9 +77,9 @@ def check_email(email, api, total, ok_list, output_file):
             f"{color_code}{status_val}{WHITE} Email: {email}"
         )
     except requests.exceptions.RequestException as e_check_email:
-        with _EMAIL_LOCK:
-            CHECK_EMAIL_NUM += 1
-            current_count = CHECK_EMAIL_NUM
+        with state.lock:
+            state.num += 1
+            current_count = state.num
         print(
             f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
             f"{current_count}/{total}{WHITE} Status: {RED}"
@@ -127,9 +129,7 @@ def mailfinder():
                 CONFIGS[REALEMAIL_API_CONFIG_KEY] = api_key
                 save_config()
             print(WHITE + LINES_SEPARATOR)
-
-            global CHECK_EMAIL_NUM
-            CHECK_EMAIL_NUM = 0
+            state = _State()
             total = len(email_providers) * len(user_variations)
 
             with ThreadPoolExecutor(max_workers=20) as executor:
@@ -139,10 +139,9 @@ def mailfinder():
                         executor.submit(
                             check_email,
                             email_address, api_key, total,
-                            valid_emails, mail_file
+                            valid_emails, mail_file, state
                         )
                         sleep(0.20)
-            CHECK_EMAIL_NUM = 0
 
         except KeyboardInterrupt:
             print("ERROR")
