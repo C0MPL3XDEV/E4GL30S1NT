@@ -16,6 +16,7 @@ dependencies = [
     "googlesearch-python",
     "lxml",
     "tabulate",
+    "pydantic>=2.0"
 ]
 
 [project.scripts]
