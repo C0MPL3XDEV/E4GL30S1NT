@@ -22,6 +22,29 @@ from eagleosint.providers.phoneinfo import phoneinfo
 from eagleosint.providers.tempmail import temp_mail_gen
 from eagleosint.providers.userrecon import userrecon
 
+class Command:
+    def __init__(self, name: str, desc: str, fn):
+        self.name = name
+        self.desc = desc
+        self.fn = fn
+
+commands = [
+    Command("Userrecon", "Username reconnaissance", userrecon),
+    Command("Facedumper", "Dump facebook information", lambda: Facebook().facedumper()),
+    Command("Mailfinder", "Find email with name", mailfinder),
+    Command("Godorker", "Dorking with google search", godorker),
+    Command("Phoneinfo", "Phone number information", phoneinfo),
+    Command("DNSLookup", "Domain name system lookup", lambda: infoga("dnslookup")),
+    Command("Whoislookup", "Identify who is on domain", lambda: infoga("whois")),
+    Command("Sublookup", "Subnetwork lookup", lambda: infoga("subnetcalc")),
+    Command("Hostfinder", "Find host domain", lambda: infoga("hostsearch")),
+    Command("DNSfinder", "Find host domain name system", lambda: infoga("mtr")),
+    Command("RIPlookup", "Reverse IP lookup", lambda: infoga("reverseiplookup")),
+    Command("IPlocation", "IP to location tracker", iplocation),
+    Command("Bitly Bypass", "Bypass all bitly urls", bypass_bitly),
+    Command("Github Lookup", "Dump GitHub information", github_lookup),
+    Command("TempMail", "Generate Temp Mail and Mail Box", temp_mail_gen),
+]
 
 def menu():
     """Displays the main menu of the E4GL30S1NT toolkit."""
@@ -30,30 +53,20 @@ def menu():
     print(
         f"""
          {BG_WHITE}\\033[2;30m Choose number or type exit for exiting {WHITE}
+         """)
 
-        {WHITE}{BLUE}  01{WHITE} Userrecon     {DARK_GRAY} Username reconnaissance
-        {WHITE}{BLUE}  02{WHITE} Facedumper    {DARK_GRAY} Dump facebook information
-        {WHITE}{BLUE}  03{WHITE} Mailfinder    {DARK_GRAY} Find email with name
-        {WHITE}{BLUE}  04{WHITE} Godorker      {DARK_GRAY} Dorking with google search
-        {WHITE}{BLUE}  05{WHITE} Phoneinfo     {DARK_GRAY} Phone number information
-        {WHITE}{BLUE}  06{WHITE} DNSLookup     {DARK_GRAY} Domain name system lookup
-        {WHITE}{BLUE}  07{WHITE} Whoislookup   {DARK_GRAY} Identify who is on domain
-        {WHITE}{BLUE}  08{WHITE} Sublookup     {DARK_GRAY} Subnetwork lookup
-        {WHITE}{BLUE}  09{WHITE} Hostfinder    {DARK_GRAY} Find host domain
-        {WHITE}{BLUE}  10{WHITE} DNSfinder     {DARK_GRAY} Find host domain name system
-        {WHITE}{BLUE}  11{WHITE} RIPlookup     {DARK_GRAY} Reverse IP lookup
-        {WHITE}{BLUE}  12{WHITE} IPlocation    {DARK_GRAY} IP to location tracker
-        {WHITE}{BLUE}  13{WHITE} Bitly Bypass  {DARK_GRAY} Bypass all bitly urls
-        {WHITE}{BLUE}  14{WHITE} Github Lookup {DARK_GRAY} Dump GitHub information
-        {WHITE}{BLUE}  15{WHITE} TempMail {DARK_GRAY}      Generate Temp Mail and Mail Box
+    for i in range(len(commands)):
+        print(f"""
+        {WHITE}{BLUE}  {i:02d}{WHITE} {commands.name}     {DARK_GRAY} {commands.desc}
+        """)
+
+    print(f"""
         {WHITE}{BLUE}  00{WHITE} Exit          {DARK_GRAY} bye bye ):
-        """
-    )
+    """)
 
 
 def mainmenu():
     """Handles the main menu input and navigation."""
-    fb_instance = None
     while True:
         menu()
         try:
@@ -61,43 +74,21 @@ def mainmenu():
             if int(len(cmd)) < 6:
                 logger.info("command dispatched: %s", cmd.strip())
                 if cmd in ("exit", "Exit", "00", "0"):
-                    sys.exit(RED + SPACE_PREFIX + "* Exiting !" + WHITE)
-                elif cmd in ("1", "01"):
-                    userrecon()
-                elif cmd in ("2", "02"):
-                    if fb_instance is None:
-                        fb_instance = Facebook()
-                    fb_instance.facedumper()
-                elif cmd in ("3", "03"):
-                    mailfinder()
-                elif cmd in ("4", "04"):
-                    godorker()
-                elif cmd in ("5", "05"):
-                    phoneinfo()
-                elif cmd in ("6", "06"):
-                    infoga("dnslookup")
-                elif cmd in ("7", "07"):
-                    infoga("whois")
-                elif cmd in ("8", "08"):
-                    infoga("subnetcalc")
-                elif cmd in ("9", "09"):
-                    infoga("hostsearch")
-                elif cmd in ("10"):
-                    infoga("mtr")
-                elif cmd in ("11"):
-                    infoga("reverseiplookup")
-                elif cmd in ("12"):
-                    iplocation()
-                elif cmd in ("13"):
-                    bypass_bitly()
-                elif cmd in ("14"):
-                    github_lookup()
-                elif cmd in ("15"):
-                    temp_mail_gen()
+                    print(RED + SPACE_PREFIX + "* Exiting !" + WHITE)
+                    sys.exit(0)
+                
+                intCmd = int(cmd)
+                if intCmd >= len(commands):
+                    raise Exception()
+                
+                commands[intCmd].fn()
             else:
                 continue
         except KeyboardInterrupt:
-            sys.exit(f"{RED}\n{SPACE_PREFIX}* Aborted !")
+            print(f"{RED}\n{SPACE_PREFIX}* Aborted !")
+            sys.exit(0)
+        except Exception:
+            continue
 
 
 def settings():
