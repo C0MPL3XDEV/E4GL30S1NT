@@ -4,11 +4,8 @@ import threading
 from getpass import getpass
 from concurrent.futures import ThreadPoolExecutor
 from time import sleep
-from turtledemo.clock import current_day
-from wsgiref import headers
 
 import requests
-from urllib3.contrib.emscripten import response
 
 from eagleosint.config import CONFIGS, PINGUTIL_API_CONFIG_KEY, logger, save_config
 from eagleosint.display import (
