@@ -36,11 +36,11 @@ class AccountStatus(str, Enum):
 
 class ProviderResult(BaseModel):
     """Base for every result returned by a provider."""
-    source: str
-    query: str
-    timestamp: datetime = Field(default_factory=_utcnow)
+    source:     str
+    query:      str
+    timestamp:  datetime = Field(default_factory=_utcnow)
     confidence: Confidence = Confidence.UNKNOWN
-    raw: dict[str, Any] | None = None
+    raw:        dict[str, Any] | None = None
 
 
 # ----------------------------------------------------------------------
@@ -49,16 +49,16 @@ class ProviderResult(BaseModel):
 
 class AccountHit(ProviderResult):
     """Username probe result on a single platform."""
-    source: str = "userrecon"
-    platform: str
-    url: str
-    status: AccountStatus
+    source:           str = "userrecon"
+    platform:         str
+    url:              str
+    status:           AccountStatus
     http_status_code: int
 
 class EmailResult(ProviderResult):
     """Email address with validation status from isitrealmail.com."""
     source: str = "mailfinder"
-    email: str
+    email:  str
     status: EmailStatus
 
 
