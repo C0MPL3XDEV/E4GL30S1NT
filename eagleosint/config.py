@@ -8,7 +8,7 @@ CONFIG_DIR  = os.path.join(os.path.expanduser("~"), ".config", "E4GL30S1NT")
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 LOG_PATH    = os.path.join(CONFIG_DIR, "eagleosint.log")
 COOKIE_FILE = os.path.join(os.path.expanduser("~"), ".cookies")
-REALEMAIL_API_CONFIG_KEY = "real-email-api-key"
+PINGUTIL_API_CONFIG_KEY = "pingutil-api-key"
 VERIPHONE_API_CONFIG_KEY = "veriphone-api-key"
 
 os.makedirs(CONFIG_DIR, exist_ok=True)
@@ -20,7 +20,7 @@ with open(CONFIG_PATH, "r", encoding="utf-8") as _cfg:
     CONFIGS: dict = json.load(_cfg)
 
 _ENV_KEY_MAP = {
-    REALEMAIL_API_CONFIG_KEY: "E4GL30S1NT_REALEMAIL_KEY",
+    PINGUTIL_API_CONFIG_KEY:  "E4GL30S1NT_PINGUTIL_KEY",
     VERIPHONE_API_CONFIG_KEY: "E4GL30S1NT_VERIPHONE_KEY",
 }
 for _k, _v in _ENV_KEY_MAP.items():
