@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 from shutil import which
+from unittest import result
 
 import click
 
@@ -161,6 +162,20 @@ def _run_update() -> None:
         print(f"{RED}Update timed out. Check your internet connection and retry.{WHITE}")
 
 
+def _write_output(
+    results: list,
+    fmt: str,
+    filepath: str | None,
+) -> None:
+    """Write structured output to file or stdout."""
+    from eagleosint.output import write_results
+    if filepath:
+        with open(filepath, "w", encoding="utf-8") as fh:
+            write_results(results, fmt, fh)
+        print(f"{BLUE}>{WHITE} output written to {filepath}")
+    else:
+        write_results(results, fmt)
+
 @click.group(
     invoke_without_command=True,
     context_settings=dict(help_option_names=["-h", "--help"]),
@@ -254,25 +269,42 @@ def cmd_riplookup() -> None:
 
 
 @main.command("iplocation")
-def cmd_iplocation() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+def cmd_iplocation(output: str | None, output_file: str | None) -> None:
     """IP address geolocation."""
     print(LOGO)
-    iplocation()
+    result = iplocation()
+    if output and result:
+        _write_output([result], output, output_file)
 
 
 @main.command("bitly")
-def cmd_bitly() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+def cmd_bitly(output: str | None, output_file: str | None) -> None:
     """Resolve and bypass Bitly short URLs."""
     print(LOGO)
-    bypass_bitly()
+    result = bypass_bitly()
+    if output and result:
+        _write_output([result], output, output_file)
 
 
 @main.command("github")
-def cmd_github() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output instead of (or in addition to) terminal display.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+def cmd_github(output: str | None, output_file: str | None) -> None:
     """GitHub user profile lookup."""
     print(LOGO)
-    github_lookup()
-
+    result = github_lookup()
+    if output and result:
+        _write_output(result, output, output_file)
 
 @main.command("tempmail")
 def cmd_tempmail() -> None:

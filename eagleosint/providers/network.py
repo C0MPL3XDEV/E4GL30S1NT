@@ -12,12 +12,13 @@ from eagleosint.display import (
     SPACE_PREFIX, LINES_SEPARATOR,
 )
 from eagleosint.session import session as _session
+from eagleosint.models import IPResult
 
 API_HACKERTARGET = "https://api.hackertarget.com/{}/?q={}"
 IPINFO_API_URL   = "https://ipinfo.io/{}/json"
 
 
-def iplocation():
+def iplocation() -> IPResult | None:
     """Retrieves and displays geolocation information for an IP address."""
     try:
         process = subprocess.run(
@@ -50,10 +51,24 @@ def iplocation():
             ("LOC", "loc"), ("ORG", "org"), ("TIMEZONE", "timezone"),
         ]:
             print(f"{SPACE_PREFIX}{BLUE}-{WHITE} {label}: {req.get(key, '')}")
+        ip_result = IPResult(
+            query=ip_address,
+            ip=req.get("ip", ip_address),
+            city=req.get("city"),
+            region=req.get("region"),
+            country=req.get("country"),
+            coordinates=req.get("loc"),
+            org=req.get("org"),
+            timezone=req.get("timezone"),
+            hostname=req.get("hostname"),
+            raw=req,
+        )
     except requests.exceptions.RequestException as e:
         print(f"{RED}Error fetching IP information: {e}{WHITE}")
+        return None
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
+    return ip_result
 
 
 def infoga(option):
