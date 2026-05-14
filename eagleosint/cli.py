@@ -304,7 +304,7 @@ def cmd_github(output: str | None, output_file: str | None) -> None:
     print(LOGO)
     result = github_lookup()
     if output and result:
-        _write_output(result, output, output_file)
+        _write_output([result], output, output_file)
 
 @main.command("tempmail")
 def cmd_tempmail() -> None:

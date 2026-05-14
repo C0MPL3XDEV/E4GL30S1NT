@@ -38,4 +38,4 @@ def write_results(
         writer.writerows(rows)
 
     else:
-        raise ValueError(f"Unknown format: {fmt}")
+        raise ValueError(f"unsupported output format: {fmt!r}")
