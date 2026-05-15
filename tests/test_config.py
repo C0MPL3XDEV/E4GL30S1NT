@@ -24,7 +24,7 @@ def _reload_config(env: dict | None = None):
 class TestConfigPaths:
     def test_config_under_home(self):
         cfg = _reload_config()
-        assert cfg.CONFIG_DIR.endswith(os.path.join(".config", "E4GL30S1NT"))
+        assert cfg.CONFIG_DIR.endswith("E4GL30S1NT")
 
     def test_config_path_ends_with_json(self):
         cfg = _reload_config()

@@ -3,7 +3,6 @@ import os
 import subprocess
 import sys
 from shutil import which
-from unittest import result
 
 import click
 
@@ -176,6 +175,41 @@ def _write_output(
     else:
         write_results(results, fmt)
 
+@main.group("investigation")
+def cmd_investigation() -> None:
+    """Commands related to investigations."""
+
+@cmd_investigation.command("new")
+@click.argument("name")
+@click.option("--tags", "-t", default="", help="Comma-separated tags.")
+@click.option("--notes", "-n", default="", help="Initial notes.")
+def cmd_investigation_new(name: str, tags: str, notes: str) -> None:
+    """Create a new investigation session."""
+    from eagleosint.storage import create_investigation
+    tag_list = [t.strip() for t in tags.split(",") if t.strip()]
+    row = create_investigation(name, tags=tag_list, notes=notes)
+    print(f"{BLUE}>{WHITE} investigation created")
+    print(f"{BLUE}  id    :{WHITE} {row.id}")
+    print(f"{BLUE}  name  :{WHITE} {row.name}")
+
+@cmd_investigation.command("list")
+def cmd_investigation_list() -> None:
+    """List all investigation sessions."""
+    from eagleosint.storage import list_investigations
+    import json
+    rows = list_investigations()
+    if not rows:
+        print(f"{YELLOW}no investigations found.{WHITE}")
+        return
+    for row in rows:
+        tags = ", ".join(json.loads(row.tags)) or "-"
+        print(
+            f"{BLUE}  {row.id}{WHITE}\n"
+            f"   name  : {row.name}\n",
+            f"   tags  : {tags}\n",
+            f"   updated : {row.updated_at[:19]}\n"
+        )
+
 @click.group(
     invoke_without_command=True,
     context_settings=dict(help_option_names=["-h", "--help"]),
@@ -273,12 +307,18 @@ def cmd_riplookup() -> None:
               help="Emit structured output.")
 @click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
               help="Write output to this file path.")
-def cmd_iplocation(output: str | None, output_file: str | None) -> None:
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_iplocation(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """IP address geolocation."""
     print(LOGO)
     result = iplocation()
     if output and result:
         _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 
 @main.command("bitly")
@@ -286,12 +326,19 @@ def cmd_iplocation(output: str | None, output_file: str | None) -> None:
               help="Emit structured output.")
 @click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
               help="Write output to this file path.")
-def cmd_bitly(output: str | None, output_file: str | None) -> None:
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_bitly(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Resolve and bypass Bitly short URLs."""
     print(LOGO)
     result = bypass_bitly()
     if output and result:
         _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
+
 
 
 @main.command("github")
@@ -299,12 +346,18 @@ def cmd_bitly(output: str | None, output_file: str | None) -> None:
               help="Emit structured output instead of (or in addition to) terminal display.")
 @click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
               help="Write output to this file path.")
-def cmd_github(output: str | None, output_file: str | None) -> None:
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_github(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """GitHub user profile lookup."""
     print(LOGO)
     result = github_lookup()
     if output and result:
         _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("tempmail")
 def cmd_tempmail() -> None:

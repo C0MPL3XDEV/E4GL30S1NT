@@ -3,8 +3,9 @@ import json
 import logging
 import os
 from logging.handlers import RotatingFileHandler
+from platformdirs import user_config_dir
 
-CONFIG_DIR  = os.path.join(os.path.expanduser("~"), ".config", "E4GL30S1NT")
+CONFIG_DIR = user_config_dir("E4GL30S1NT", appauthor=False)
 CONFIG_PATH = os.path.join(CONFIG_DIR, "config.json")
 LOG_PATH    = os.path.join(CONFIG_DIR, "eagleosint.log")
 COOKIE_FILE = os.path.join(os.path.expanduser("~"), ".cookies")
