@@ -175,41 +175,6 @@ def _write_output(
     else:
         write_results(results, fmt)
 
-@main.group("investigation")
-def cmd_investigation() -> None:
-    """Commands related to investigations."""
-
-@cmd_investigation.command("new")
-@click.argument("name")
-@click.option("--tags", "-t", default="", help="Comma-separated tags.")
-@click.option("--notes", "-n", default="", help="Initial notes.")
-def cmd_investigation_new(name: str, tags: str, notes: str) -> None:
-    """Create a new investigation session."""
-    from eagleosint.storage import create_investigation
-    tag_list = [t.strip() for t in tags.split(",") if t.strip()]
-    row = create_investigation(name, tags=tag_list, notes=notes)
-    print(f"{BLUE}>{WHITE} investigation created")
-    print(f"{BLUE}  id    :{WHITE} {row.id}")
-    print(f"{BLUE}  name  :{WHITE} {row.name}")
-
-@cmd_investigation.command("list")
-def cmd_investigation_list() -> None:
-    """List all investigation sessions."""
-    from eagleosint.storage import list_investigations
-    import json
-    rows = list_investigations()
-    if not rows:
-        print(f"{YELLOW}no investigations found.{WHITE}")
-        return
-    for row in rows:
-        tags = ", ".join(json.loads(row.tags)) or "-"
-        print(
-            f"{BLUE}  {row.id}{WHITE}\n"
-            f"   name  : {row.name}\n",
-            f"   tags  : {tags}\n",
-            f"   updated : {row.updated_at[:19]}\n"
-        )
-
 @click.group(
     invoke_without_command=True,
     context_settings=dict(help_option_names=["-h", "--help"]),
@@ -300,6 +265,41 @@ def cmd_riplookup() -> None:
     """Reverse IP lookup."""
     print(LOGO)
     infoga("reverseiplookup")
+
+@main.group("investigation")
+def cmd_investigation() -> None:
+    """Commands related to investigations."""
+
+@cmd_investigation.command("new")
+@click.argument("name")
+@click.option("--tags", "-t", default="", help="Comma-separated tags.")
+@click.option("--notes", "-n", default="", help="Initial notes.")
+def cmd_investigation_new(name: str, tags: str, notes: str) -> None:
+    """Create a new investigation session."""
+    from eagleosint.storage import create_investigation
+    tag_list = [t.strip() for t in tags.split(",") if t.strip()]
+    row = create_investigation(name, tags=tag_list, notes=notes)
+    print(f"{BLUE}>{WHITE} investigation created")
+    print(f"{BLUE}  id    :{WHITE} {row.id}")
+    print(f"{BLUE}  name  :{WHITE} {row.name}")
+
+@cmd_investigation.command("list")
+def cmd_investigation_list() -> None:
+    """List all investigation sessions."""
+    from eagleosint.storage import list_investigations
+    import json
+    rows = list_investigations()
+    if not rows:
+        print(f"{YELLOW}no investigations found.{WHITE}")
+        return
+    for row in rows:
+        tags = ", ".join(json.loads(row.tags)) or "-"
+        print(
+            f"{BLUE}  {row.id}{WHITE}\n"
+            f"   name  : {row.name}\n"
+            f"   tags  : {tags}\n"
+            f"   updated : {row.updated_at[:19]}\n"
+        )
 
 
 @main.command("iplocation")
