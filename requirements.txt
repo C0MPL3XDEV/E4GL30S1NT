@@ -5,3 +5,5 @@ googlesearch-python
 lxml
 tabulate
 sqlalchemy
+platformdirs
+pydantic
