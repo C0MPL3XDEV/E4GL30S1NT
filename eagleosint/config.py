@@ -79,7 +79,7 @@ class Settings(BaseModel):
            dash_name = field_name.replace("_", "-")
            if isinstance(val, SecretStr):
                raw = val.get_secret_value()
-               out[dash_name] = f"{raw[:4]}{"*" * 8}" if raw else "(empty)"
+               out[dash_name] = f"{raw[:4]}{'*' * 8}" if raw else "(empty)"
            else:
                out[dash_name] = "(not set)"
        return out
@@ -87,6 +87,9 @@ class Settings(BaseModel):
 # --------------------------------------------------------------
 # Load settings: JSON file -> env var overrides
 # --------------------------------------------------------------
+
+def _to_secret(val: str | None) -> SecretStr | None:
+    return SecretStr(val) if val else None
 
 def _load_settings() -> Settings:
     data: dict[str, str] = {}
@@ -108,10 +111,11 @@ def _load_settings() -> Settings:
             data[key_name] = val
 
     return Settings(
-        pingutil_api_key=data.get("pingutil-api-key"),
-        veriphone_api_key=data.get("veriphone-api-key"),
+        pingutil_api_key=_to_secret(data.get("pingutil-api-key")),
+        veriphone_api_key=_to_secret(data.get("veriphone-api-key")),
     )
 
+settings = _load_settings()
 
 def _setup_logger() -> logging.Logger:
     _logger = logging.getLogger("eagleosint")
