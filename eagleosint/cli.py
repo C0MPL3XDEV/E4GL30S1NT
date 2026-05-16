@@ -6,7 +6,7 @@ from shutil import which
 
 import click
 
-from eagleosint.config import CONFIGS, logger, save_config
+from eagleosint.config import settings, logger, save_config
 from eagleosint.display import (
     RED, YELLOW, BLUE, WHITE, DARK_GRAY, LIGHT_RED,
     BG_WHITE, BG_RED,
@@ -108,15 +108,14 @@ def settings():
 
     setting_counter = 0
     config_options = {}
-    for setting_key_name, setting_value_item in CONFIGS.items():
-        if setting_key_name != "headers":
-            setting_counter += 1
-            config_options[str(setting_counter)] = setting_key_name
-            print(
-                f"         {WHITE}{RED}  0{setting_counter} {setting_key_name}"
-                + " " * (20 - len(setting_key_name))
-                + f'{LIGHT_RED}:  "{setting_value_item}" '
-            )
+    for setting_key_name, setting_value_item in settings.display_items().items():
+        setting_counter += 1
+        config_options[str(setting_counter)] = setting_key_name
+        print(
+            f"         {WHITE}{RED}  0{setting_counter} {setting_key_name}"
+            + " " * (20 - len(setting_key_name))
+            + f'{LIGHT_RED}:  "{setting_value_item}" '
+        )
     exit_option_key = "exit".upper()
     print(
         f"         {WHITE}{RED}  00{RED} {exit_option_key}"
@@ -136,7 +135,7 @@ def settings():
         f"{SPACE_PREFIX}{LIGHT_RED}>{RED} Insert the new value of "
         f"{config_options[chosen_option]} :{LIGHT_RED} "
     )
-    CONFIGS[config_options[chosen_option]] = new_setting_value
+    settings.set_key(config_options[chosen_option], new_setting_value)
     save_config()
 
 

@@ -42,18 +42,17 @@ class TestConfigPaths:
 class TestEnvOverrides:
     def test_veriphone_key_loaded_from_env(self):
         cfg = _reload_config(env={"E4GL30S1NT_VERIPHONE_KEY": "test-vp-key"})
-        assert cfg.CONFIGS.get("veriphone-api-key") == "test-vp-key"
+        assert cfg.settings.get_key("veriphone-api-key") == "test-vp-key"
 
     def test_pingutil_key_loaded_from_env(self):
         cfg = _reload_config(env={"E4GL30S1NT_PINGUTIL_KEY": "test-pu-key"})
-        assert cfg.CONFIGS.get("pingutil-api-key") == "test-pu-key"
+        assert cfg.settings.get_key("pingutil-api-key") == "test-pu-key"
 
 class TestSaveConfig:
     def test_save_config_writes_then_replaces(self, tmp_path):
         import eagleosint.config as cfg
-
         cfg.CONFIG_PATH = str(tmp_path / "config.json")
-        cfg.CONFIGS = {"pingutil-api-key": "saved"}
+        cfg.settings.set_key("pingutil-api-key", "saved")
         cfg.save_config()
 
         with open(cfg.CONFIG_PATH, encoding="utf-8") as f:
@@ -71,4 +70,9 @@ class TestSaveConfig:
 
     def test_missing_pingutil_env_var_leaves_key_absent(self):
         cfg = _reload_config()
-        assert cfg.CONFIGS.get("pingutil-api-key") in (None, "")
+        assert cfg.settings.get_key("pingutil-api-key") is None
+
+    def test_secret_str_masked_in_repr(self):
+        cfg = _reload_config(env={"E4GL30S1NT_PINGUTIL_KEY": "super-secret-key"})
+        # SecretStr must never expose the value in repr
+        assert "super-secret-key" not in repr(cfg.settings)

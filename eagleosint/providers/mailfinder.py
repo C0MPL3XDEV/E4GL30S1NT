@@ -3,11 +3,12 @@ import json
 import threading
 from getpass import getpass
 from concurrent.futures import ThreadPoolExecutor
+from random import seed
 from time import sleep
 
 import requests
 
-from eagleosint.config import CONFIGS, PINGUTIL_API_CONFIG_KEY, logger, save_config
+from eagleosint.config import settings, logger, save_config
 from eagleosint.display import (
     RED, GREEN, YELLOW, BLUE, WHITE,
     BG_RED, BG_GREEN, BG_YELLOW,
@@ -125,7 +126,7 @@ def mailfinder():
     with open(results_file, "w", encoding="utf-8") as mail_file:
         valid_emails = []
         try:
-            api_key = CONFIGS.get(PINGUTIL_API_CONFIG_KEY)
+            api_key = settings.get_key("pingutil-api-key")
             if not api_key:
                 entered = input(
                     f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} pingutil API key "
@@ -133,7 +134,7 @@ def mailfinder():
                 ).strip()
                 if entered:
                     api_key = entered
-                    CONFIGS[PINGUTIL_API_CONFIG_KEY] = api_key
+                    settings.set_key("pingutil-api-key", api_key)
                     save_config()
             if not api_key:
                 print(f"{SPACE_PREFIX}{YELLOW}! demo mode active — rate limited to 10 req/min{WHITE}")

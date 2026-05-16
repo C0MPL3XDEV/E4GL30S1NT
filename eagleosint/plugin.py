@@ -68,8 +68,8 @@ class BaseProvider(ABC):
         True if all required API keys are present in CONFIGS.
         Override for providers whose availability depends on other factors.
         """
-        from eagleosint.config import CONFIGS
-        return all(CONFIGS.get(k) for k in self.required_keys)
+        from eagleosint.config import settings
+        return all(settings.get_key(k) for k in self.required_keys)
 
     def validate_query(self, query: str) -> str | None:
         """
