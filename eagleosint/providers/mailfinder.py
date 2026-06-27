@@ -8,6 +8,7 @@ from getpass import getpass
 from concurrent.futures import ThreadPoolExecutor
 from random import seed
 from time import sleep
+from typing import Callable
 
 import requests
 
@@ -100,7 +101,7 @@ class MailFinderProvider(BaseProvider):
             api_key: str | None = None,
             max_workers: int = 20,
             delay: float | None = None,
-            on_result: callable | None = None,
+            on_result: Callable | None = None,
     ) -> list[EmailResult]:
         error = self.validate_query(query)
         if error:
