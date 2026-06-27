@@ -61,13 +61,14 @@ class TestIsAvailable:
 
     def test_missing_key_returns_false(self, monkeypatch):
         import eagleosint.config as cfg
-        monkeypatch.setitem(cfg.CONFIGS, "pingutil-api-key", "")
+        monkeypatch.setattr(cfg.settings, "pingutil_api_key", None)
         p = _DummyProvider()
         assert p.is_available() is False
 
     def test_present_key_returns_true(self, monkeypatch):
+        from pydantic import SecretStr
         import eagleosint.config as cfg
-        monkeypatch.setitem(cfg.CONFIGS, "pingutil-api-key", "test-key-123")
+        monkeypatch.setattr(cfg.settings, "pingutil_api_key", SecretStr("test-key-123"))
         p = _DummyProvider()
         assert p.is_available() is True
 

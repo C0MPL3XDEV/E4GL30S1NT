@@ -57,14 +57,14 @@ class Settings(BaseModel):
     def set_key(self, name: str, value: str) -> None:
         """Update a key in-place, Raises KeyError for unknown keys."""
         attr = name.replace("-", "_")
-        if attr not in self.model_fields:
+        if attr not in type(self).model_fields:
             raise KeyError(f"unknown config key: {name!r}")
         setattr(self, attr, SecretStr(value) if value else None)
 
     def to_file_dict(self) -> dict[str, str]:
         """Non-null keys as plaintext dict - for JSON persistence only"""
         out = {}
-        for field_name in self.model_fields:
+        for field_name in type(self).model_fields:
             val = getattr(self, field_name)
             if isinstance(val, SecretStr):
                 out[field_name.replace("_", "-")] = val.get_secret_value()
@@ -74,7 +74,7 @@ class Settings(BaseModel):
     def display_items(self) -> dict[str, str]:
        """All keys with partially masked values - for the settings UI"""
        out = {}
-       for field_name in self.model_fields:
+       for field_name in type(self).model_fields:
            val = getattr(self, field_name)
            dash_name = field_name.replace("_", "-")
            if isinstance(val, SecretStr):
