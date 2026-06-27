@@ -5,7 +5,7 @@ from getpass import getpass
 
 import requests
 
-from eagleosint.config import CONFIGS, VERIPHONE_API_CONFIG_KEY, save_config
+from eagleosint.config import settings, save_config
 from eagleosint.display import (
     RED, YELLOW, BLUE, WHITE,
     BG_BLUE, BG_RED,
@@ -19,13 +19,13 @@ VERIPHONE_API_BASE_URL = "https://api.veriphone.io/v2/verify"
 def phoneinfo():
     """Retrieves information about a phone number."""
     phone_number = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter number:{BLUE} ")
-    api_key = CONFIGS.get(VERIPHONE_API_CONFIG_KEY)
+    api_key = settings.get_key("veriphone-api-key")
     if not api_key:
         api_key = input(
             f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter your api key "
             f"(https://veriphone.io) :{BLUE} "
         )
-        CONFIGS[VERIPHONE_API_CONFIG_KEY] = api_key
+        settings.set_key("veriphone-api-key", api_key)
         save_config()
     if not phone_number:
         return

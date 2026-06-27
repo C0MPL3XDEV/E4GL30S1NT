@@ -3,19 +3,22 @@ import json
 import threading
 from getpass import getpass
 from concurrent.futures import ThreadPoolExecutor
+from random import seed
 from time import sleep
 
 import requests
 
-from eagleosint.config import CONFIGS, REALEMAIL_API_CONFIG_KEY, logger, save_config
+from eagleosint.config import settings, logger, save_config
 from eagleosint.display import (
     RED, GREEN, YELLOW, BLUE, WHITE,
     BG_RED, BG_GREEN, BG_YELLOW,
     SPACE_PREFIX, LINES_SEPARATOR,
 )
 from eagleosint.session import session as _session
+from eagleosint.models import EmailStatus
 
-REALEMAIL_API_URL = "https://isitarealemail.com/api/email/validate"
+PINGUTIL_DEMO_URL = "https://pingutil.com/v1/demo/lookup"
+PINGUTIL_AUTH_URL = "https://pingutil.com/v1/lookup"
 
 class _State:
     __slots__ = ("num", "lock")
@@ -24,57 +27,60 @@ class _State:
         self.lock = threading.Lock()
 
 
-def check_email(email, api, total, ok_list, output_file, state):
-    try:
-        response = _session.get(
-            REALEMAIL_API_URL,
-            params={"email": email},
-            headers={"Authorization": "Bearer " + api},
-            timeout=10,
-        )
-        if response.status_code != 200:
-            color_code = RED
-            back_color_code = BG_RED
-            status_val = f"HTTP {response.status_code}"
-        else:
-            try:
-                status_val = response.json().get("status", "unknown")
-            except json.JSONDecodeError:
-                with state.lock:
-                    state.num += 1
-                    current_count = state.num
-                print(
-                    f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
-                    f"{current_count}/{total}{WHITE} Status: {RED}API "
-                    f"error or invalid JSON for {email}{WHITE}"
-                )
-                return
+def check_email(email, api_key, total, ok_list, output_file, state):
+    url = PINGUTIL_AUTH_URL if api_key else PINGUTIL_DEMO_URL
+    headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
 
-        if status_val == "invalid":
-            color_code = RED
-            back_color_code = BG_RED
-        elif status_val == "unknown":
-            color_code = YELLOW
-            back_color_code = BG_YELLOW
-        elif status_val == "valid":
-            color_code = GREEN
-            back_color_code = BG_GREEN
+    try:
+        response = _session.post(url, json={"input": email}, headers=headers, timeout=10)
+        if response.status_code != 200:
+            with state.lock:
+                state.num += 1
+                current_count = state.num
+            print(
+                f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
+                f"{current_count}/{total}{WHITE} Status: {RED}HTTP "
+                f"{response.status_code} for {email}{WHITE}"
+            )
+            return
+        try:
+            category = response.json().get("category", "unknown")
+        except json.JSONDecodeError:
+            with state.lock:
+                state.num += 1
+                current_count = state.num
+            print(
+                f"{SPACE_PREFIX}{BG_RED}{WHITE}  ERROR  {WHITE}{BLUE} "
+                f"{current_count}/{total}{WHITE} Status: {RED}invalid JSON "
+                f"for {email}{WHITE}"
+            )
+            return
+        if category == "disposable":
+            status_val = EmailStatus.INVALID
+        elif category == "unknown":
+            status_val = EmailStatus.UNKNOWN
         else:
-            color_code = RED
-            back_color_code = BG_RED
+            status_val = EmailStatus.VALID
+
+        if status_val == EmailStatus.INVALID:
+            color_code, back_color_code = RED, BG_RED
+        elif status_val == EmailStatus.UNKNOWN:
+            color_code, back_color_code = YELLOW, BG_YELLOW
+        else:
+            color_code, back_color_code = GREEN, BG_GREEN
 
         with state.lock:
             state.num += 1
             current_count = state.num
-            if status_val == "valid":
+            if status_val == EmailStatus.VALID:
                 ok_list.append(email)
                 output_file.write(email + "\n")
 
-        print_space_val = "  " if status_val == "valid" else " "
+        pad = "  " if status_val == EmailStatus.VALID else " "
         print(
-            f"{SPACE_PREFIX}{back_color_code}{WHITE}{print_space_val}{status_val.upper()}"
-            f"{print_space_val}{WHITE}{BLUE} {current_count}/{total}{WHITE} Status: "
-            f"{color_code}{status_val}{WHITE} Email: {email}"
+            f"{SPACE_PREFIX}{back_color_code}{WHITE}{pad}{status_val.value.upper()}"
+            f"{pad}{WHITE}{BLUE} {current_count}/{total}{WHITE} Status: "
+            f"{color_code}{status_val.value}{WHITE} Email: {email}"
         )
     except requests.exceptions.RequestException as e_check_email:
         with state.lock:
@@ -120,14 +126,19 @@ def mailfinder():
     with open(results_file, "w", encoding="utf-8") as mail_file:
         valid_emails = []
         try:
-            api_key = CONFIGS.get(REALEMAIL_API_CONFIG_KEY)
+            api_key = settings.get_key("pingutil-api-key")
             if not api_key:
-                api_key = input(
-                    f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} enter your api key "
-                    f"(https://isitarealemail.com) :{BLUE} "
-                )
-                CONFIGS[REALEMAIL_API_CONFIG_KEY] = api_key
-                save_config()
+                entered = input(
+                    f"{SPACE_PREFIX}{WHITE}{BLUE}>{WHITE} pingutil API key "
+                    f"(enter to skip, uses demo mode — 10 req/min):{BLUE} "
+                ).strip()
+                if entered:
+                    api_key = entered
+                    settings.set_key("pingutil-api-key", api_key)
+                    save_config()
+            if not api_key:
+                print(f"{SPACE_PREFIX}{YELLOW}! demo mode active — rate limited to 10 req/min{WHITE}")
+
             print(WHITE + LINES_SEPARATOR)
             state = _State()
             total = len(email_providers) * len(user_variations)
@@ -141,7 +152,7 @@ def mailfinder():
                             email_address, api_key, total,
                             valid_emails, mail_file, state
                         )
-                        sleep(0.20)
+                        sleep(6.1 if not api_key else 0.20)
 
         except KeyboardInterrupt:
             print("ERROR")

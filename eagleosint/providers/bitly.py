@@ -11,9 +11,10 @@ from eagleosint.display import (
     SPACE_PREFIX, LINES_SEPARATOR,
 )
 from eagleosint.session import session as _session
+from eagleosint.models import URLExpansion
 
 
-def bypass_bitly():
+def bypass_bitly() -> URLExpansion | None:
     """Bypasses Bitly URL shorteners."""
     print(WHITE + LINES_SEPARATOR)
     bitly_url_input = input(
@@ -29,13 +30,21 @@ def bypass_bitly():
         )
         soup_parser = BeautifulSoup(bitly_code_response.text, "lxml")
         original_link_found = soup_parser.find_all("a", href=True)[0]["href"]
+        result = URLExpansion(
+            query=bitly_url_input,
+            short_url=bitly_url_input,
+            original_url=original_link_found,
+        )
         print(
             f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Original URL: "
             f"\u001b[38;5;32m{original_link_found}"
         )
     except requests.exceptions.RequestException as e:
         print(f"{RED}Error fetching Bitly URL: {e}{WHITE}")
+        return None
     except (IndexError, KeyError) as e:
         print(f"{RED}Error parsing Bitly response: {e}{WHITE}")
+        return None
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
+    return result

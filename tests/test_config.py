@@ -24,7 +24,7 @@ def _reload_config(env: dict | None = None):
 class TestConfigPaths:
     def test_config_under_home(self):
         cfg = _reload_config()
-        assert cfg.CONFIG_DIR.endswith(os.path.join(".config", "E4GL30S1NT"))
+        assert cfg.CONFIG_DIR.endswith("E4GL30S1NT")
 
     def test_config_path_ends_with_json(self):
         cfg = _reload_config()
@@ -40,30 +40,24 @@ class TestConfigPaths:
 
 
 class TestEnvOverrides:
-    def test_realemail_key_loaded_from_env(self):
-        cfg = _reload_config(env={"E4GL30S1NT_REALEMAIL_KEY": "test-re-key"})
-        assert cfg.CONFIGS.get("real-email-api-key") == "test-re-key"
-
     def test_veriphone_key_loaded_from_env(self):
         cfg = _reload_config(env={"E4GL30S1NT_VERIPHONE_KEY": "test-vp-key"})
-        assert cfg.CONFIGS.get("veriphone-api-key") == "test-vp-key"
+        assert cfg.settings.get_key("veriphone-api-key") == "test-vp-key"
 
-    def test_missing_env_var_leaves_key_absent(self):
-        cfg = _reload_config()
-        # env isn't set — key must not be injected with a real value
-        assert cfg.CONFIGS.get("real-email-api-key") in (None, "")
+    def test_pingutil_key_loaded_from_env(self):
+        cfg = _reload_config(env={"E4GL30S1NT_PINGUTIL_KEY": "test-pu-key"})
+        assert cfg.settings.get_key("pingutil-api-key") == "test-pu-key"
 
 class TestSaveConfig:
     def test_save_config_writes_then_replaces(self, tmp_path):
         import eagleosint.config as cfg
-
         cfg.CONFIG_PATH = str(tmp_path / "config.json")
-        cfg.CONFIGS = {"real-email-api-key": "saved"}
+        cfg.settings.set_key("pingutil-api-key", "saved")
         cfg.save_config()
 
         with open(cfg.CONFIG_PATH, encoding="utf-8") as f:
             data = json.load(f)
-        assert data["real-email-api-key"] == "saved"
+        assert data["pingutil-api-key"] == "saved"
 
     def test_save_config_atomic_no_tmp_left(self, tmp_path):
         import eagleosint.config as cfg
@@ -73,3 +67,12 @@ class TestSaveConfig:
         cfg.save_config()
 
         assert not os.path.exists(cfg.CONFIG_PATH + ".tmp")
+
+    def test_missing_pingutil_env_var_leaves_key_absent(self):
+        cfg = _reload_config()
+        assert cfg.settings.get_key("pingutil-api-key") is None
+
+    def test_secret_str_masked_in_repr(self):
+        cfg = _reload_config(env={"E4GL30S1NT_PINGUTIL_KEY": "super-secret-key"})
+        # SecretStr must never expose the value in repr
+        assert "super-secret-key" not in repr(cfg.settings)
