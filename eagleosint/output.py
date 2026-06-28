@@ -4,14 +4,16 @@ from __future__ import annotations
 import csv
 import json
 import sys
-from typing import TextIO
+from typing import TextIO, Any
 
+from eagleosint.masking import mask_result, mask_results
 from eagleosint.models import ProviderResult
 
 def write_results(
         results: list[ProviderResult],
         fmt: str,
-        dest: TextIO = sys.stdout
+        dest: TextIO = sys.stdout,
+        show_pii: bool = False
 ) -> None:
     """
     Serialize results to dest in the requested format.
@@ -21,14 +23,17 @@ def write_results(
     if not results:
         return
 
+    rows: list[dict[str, Any]]
+    if show_pii:
+        rows = [r.model_dump(mode="json") for r in results]
+    else:
+        rows = mask_results(results)
+
     if fmt == "json":
-        payload = [r.model_dump(mode="json") for r in results]
-        json.dump(payload, dest, indent=2, default=str)
+        json.dump(rows, dest, indent=2, default=str)
         dest.write("\n")
 
     elif fmt == "csv":
-        rows = [r.model_dump(mode="csv") for r in results]
-        # union of all keys preserves columns across mixed result types
         fieldnames = list(dict.fromkeys(k for row in rows for k in row))
         writer = csv.DictWriter(
             dest, fieldnames=fieldnames,
@@ -36,6 +41,5 @@ def write_results(
         )
         writer.writeheader()
         writer.writerows(rows)
-
     else:
         raise ValueError(f"unsupported output format: {fmt!r}")

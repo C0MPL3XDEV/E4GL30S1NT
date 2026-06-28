@@ -164,15 +164,16 @@ def _write_output(
     results: list,
     fmt: str,
     filepath: str | None,
+    show_pii: bool = False
 ) -> None:
     """Write structured output to file or stdout."""
     from eagleosint.output import write_results
     if filepath:
         with open(filepath, "w", encoding="utf-8") as fh:
-            write_results(results, fmt, fh)
+            write_results(results, fmt, fh, show_pii=show_pii)
         print(f"{BLUE}>{WHITE} output written to {filepath}")
     else:
-        write_results(results, fmt)
+        write_results(results, fmt, show_pii=show_pii)
 
 @click.group(
     invoke_without_command=True,
@@ -195,12 +196,14 @@ def main(ctx: click.Context) -> None:
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save results to this investigation ID.")
-def cmd_userrecon(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_userrecon(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Username reconnaissance across 71 platforms."""
     print(LOGO)
     results = userrecon()
     if output and results:
-        _write_output(results, output, output_file)
+        _write_output(results, output, output_file, show_pii=show_pii)
     if save_to and results:
         from eagleosint.storage import save_result
         for r in results:
@@ -221,12 +224,14 @@ def cmd_facedumper() -> None:
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save results to this investigation ID.")
-def cmd_mailfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_mailfinder(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Find email addresses from a name."""
     print(LOGO)
     results = mailfinder()
     if output and results:
-        _write_output(results, output, output_file)
+        _write_output(results, output, output_file, show_pii=show_pii)
     if save_to and results:
         from eagleosint.storage import save_result
         for r in results:
@@ -240,12 +245,14 @@ def cmd_mailfinder(output: str | None, output_file: str | None, save_to: str | N
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save results to this investigation ID.")
-def cmd_godorker(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_godorker(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Google dorking with result scraping."""
     print(LOGO)
     results = godorker()
     if output and results:
-        _write_output(results, output, output_file)
+        _write_output(results, output, output_file, show_pii=show_pii)
     if save_to and results:
         from eagleosint.storage import save_result
         for r in results:
@@ -259,12 +266,14 @@ def cmd_godorker(output: str | None, output_file: str | None, save_to: str | Non
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_phoneinfo(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_phoneinfo(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Phone number information and validation."""
     print(LOGO)
     result = phoneinfo()
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -277,12 +286,14 @@ def cmd_phoneinfo(output: str | None, output_file: str | None, save_to: str | No
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_dns(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_dns(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """DNS lookup for a domain or IP."""
     print(LOGO)
     result = infoga("dnslookup")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -295,12 +306,14 @@ def cmd_dns(output: str | None, output_file: str | None, save_to: str | None) ->
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_whois(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_whois(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """WHOIS lookup for a domain."""
     print(LOGO)
     result = infoga("whois")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -313,12 +326,14 @@ def cmd_whois(output: str | None, output_file: str | None, save_to: str | None) 
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_subnet(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_subnet(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Subnet / network calculator."""
     print(LOGO)
     result = infoga("subnetcalc")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -331,12 +346,14 @@ def cmd_subnet(output: str | None, output_file: str | None, save_to: str | None)
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_hostfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_hostfinder(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Find hosts for a domain."""
     print(LOGO)
     result = infoga("hostsearch")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -349,12 +366,14 @@ def cmd_hostfinder(output: str | None, output_file: str | None, save_to: str | N
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_dnsfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_dnsfinder(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """DNS finder via MTR."""
     print(LOGO)
     result = infoga("mtr")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -367,12 +386,14 @@ def cmd_dnsfinder(output: str | None, output_file: str | None, save_to: str | No
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_riplookup(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_riplookup(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Reverse IP lookup."""
     print(LOGO)
     result = infoga("reverseiplookup")
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -421,12 +442,14 @@ def cmd_investigation_list() -> None:
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_iplocation(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_iplocation(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """IP address geolocation."""
     print(LOGO)
     result = iplocation()
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -440,12 +463,14 @@ def cmd_iplocation(output: str | None, output_file: str | None, save_to: str | N
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_bitly(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_bitly(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """Resolve and bypass Bitly short URLs."""
     print(LOGO)
     result = bypass_bitly()
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
@@ -460,12 +485,14 @@ def cmd_bitly(output: str | None, output_file: str | None, save_to: str | None) 
               help="Write output to this file path.")
 @click.option("--save-to", "save_to", default=None,
               help="Save result to this investigation ID.")
-def cmd_github(output: str | None, output_file: str | None, save_to: str | None) -> None:
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+def cmd_github(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
     """GitHub user profile lookup."""
     print(LOGO)
     result = github_lookup()
     if output and result:
-        _write_output([result], output, output_file)
+        _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:
         from eagleosint.storage import save_result
         save_result(save_to, result)
