@@ -7,3 +7,4 @@ tabulate
 sqlalchemy
 platformdirs
 pydantic
+pdfplumber
