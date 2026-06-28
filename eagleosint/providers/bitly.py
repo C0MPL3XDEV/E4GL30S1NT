@@ -66,7 +66,7 @@ def bypass_bitly() -> URLExpansion | None:
     ).strip()
 
     provider = BitlyProvider()
-    results = provider.execute(bitly_url)
+    results = provider.run(bitly_url)
 
     if not results:
         print(f"{RED}No results for '{bitly_url}'.{WHITE}")
@@ -74,7 +74,7 @@ def bypass_bitly() -> URLExpansion | None:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return None
 
-    result = results[0]
+    result: URLExpansion = results[0]  # type: ignore[assignment]
     print(
         f"{SPACE_PREFIX}{BG_BLUE} DONE {WHITE} Original URL: "
         f"\u001b[38;5;32m{result.original_url}"

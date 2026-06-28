@@ -127,7 +127,7 @@ def iplocation() -> IPResult | None:
     ip_address = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter IP:{BLUE} ").strip()
 
     provider = IPLocationProvider()
-    results = provider.execute(ip_address)
+    results = provider.run(ip_address)
 
     print(WHITE + LINES_SEPARATOR)
     if not results:
@@ -136,7 +136,7 @@ def iplocation() -> IPResult | None:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return None
 
-    result = results[0]
+    result: IPResult = results[0]  # type: ignore[assignment]
     for label, value in [
         ("IP", result.ip), ("CITY", result.city), ("COUNTRY", result.country),
         ("LOC", result.coordinates), ("ORG", result.org), ("TIMEZONE", result.timezone),
@@ -154,7 +154,7 @@ def infoga(option: str) -> DomainResult | None:
         return None
 
     provider = DomainInfoProvider()
-    results = provider.execute(target, query_type=option)
+    results = provider.run(target, query_type=option)
 
     print(WHITE + LINES_SEPARATOR)
     if not results:
@@ -163,9 +163,10 @@ def infoga(option: str) -> DomainResult | None:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return None
 
-    for line in results[0].records:
+    result: DomainResult = results[0]  # type: ignore[assignment]
+    for line in result.records:
         print(f"{SPACE_PREFIX}{BLUE}-{WHITE} {line}")
 
     print(WHITE + LINES_SEPARATOR)
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
-    return results[0]
+    return result

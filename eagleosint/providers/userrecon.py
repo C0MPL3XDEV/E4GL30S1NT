@@ -161,7 +161,7 @@ def userrecon() -> list[AccountHit]:
 
     print(WHITE + LINES_SEPARATOR)
     provider = UserReconProvider()
-    results = provider.execute(username, on_result=_on_result)
+    results: list[AccountHit] = provider.run(username, on_result=_on_result)  # type: ignore[assignment]
 
     print()
     print(WHITE + LINES_SEPARATOR)
