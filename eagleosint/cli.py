@@ -189,11 +189,23 @@ def main(ctx: click.Context) -> None:
 
 
 @main.command("userrecon")
-def cmd_userrecon() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save results to this investigation ID.")
+def cmd_userrecon(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Username reconnaissance across 71 platforms."""
     print(LOGO)
-    userrecon()
-
+    results = userrecon()
+    if output and results:
+        _write_output(results, output, output_file)
+    if save_to and results:
+        from eagleosint.storage import save_result
+        for r in results:
+            save_result(save_to, r)
+        print(f"{BLUE}>{WHITE} {len(results)} results saved to investigation {save_to}")
 
 @main.command("facedumper")
 def cmd_facedumper() -> None:
@@ -202,68 +214,169 @@ def cmd_facedumper() -> None:
     fb = Facebook()
     fb.facedumper()
 
-
 @main.command("mailfinder")
-def cmd_mailfinder() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save results to this investigation ID.")
+def cmd_mailfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Find email addresses from a name."""
     print(LOGO)
-    mailfinder()
-
+    results = mailfinder()
+    if output and results:
+        _write_output(results, output, output_file)
+    if save_to and results:
+        from eagleosint.storage import save_result
+        for r in results:
+            save_result(save_to, r)
+        print(f"{BLUE}>{WHITE} {len(results)} results saved to investigation {save_to}")
 
 @main.command("godorker")
-def cmd_godorker() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save results to this investigation ID.")
+def cmd_godorker(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Google dorking with result scraping."""
     print(LOGO)
-    godorker()
-
+    results = godorker()
+    if output and results:
+        _write_output(results, output, output_file)
+    if save_to and results:
+        from eagleosint.storage import save_result
+        for r in results:
+            save_result(save_to, r)
+        print(f"{BLUE}>{WHITE} {len(results)} results saved to investigation {save_to}")
 
 @main.command("phoneinfo")
-def cmd_phoneinfo() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_phoneinfo(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Phone number information and validation."""
     print(LOGO)
-    phoneinfo()
-
+    result = phoneinfo()
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("dns")
-def cmd_dns() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_dns(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """DNS lookup for a domain or IP."""
     print(LOGO)
-    infoga("dnslookup")
-
+    result = infoga("dnslookup")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("whois")
-def cmd_whois() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_whois(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """WHOIS lookup for a domain."""
     print(LOGO)
-    infoga("whois")
-
+    result = infoga("whois")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("subnet")
-def cmd_subnet() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_subnet(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Subnet / network calculator."""
     print(LOGO)
-    infoga("subnetcalc")
-
+    result = infoga("subnetcalc")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("hostfinder")
-def cmd_hostfinder() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_hostfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Find hosts for a domain."""
     print(LOGO)
-    infoga("hostsearch")
-
+    result = infoga("hostsearch")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("dnsfinder")
-def cmd_dnsfinder() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_dnsfinder(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """DNS finder via MTR."""
     print(LOGO)
-    infoga("mtr")
-
+    result = infoga("mtr")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.command("riplookup")
-def cmd_riplookup() -> None:
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+def cmd_riplookup(output: str | None, output_file: str | None, save_to: str | None) -> None:
     """Reverse IP lookup."""
     print(LOGO)
-    infoga("reverseiplookup")
+    result = infoga("reverseiplookup")
+    if output and result:
+        _write_output([result], output, output_file)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
 
 @main.group("investigation")
 def cmd_investigation() -> None:
