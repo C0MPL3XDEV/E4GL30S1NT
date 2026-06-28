@@ -1,6 +1,9 @@
 ﻿"""Google dorking search and result scraper."""
+from __future__ import annotations
+import logging
 import textwrap
 from getpass import getpass
+from typing import Callable, ClassVar
 
 import requests
 from googlesearch import search  # type: ignore
@@ -11,57 +14,101 @@ from eagleosint.display import (
     BG_BLUE,
     SPACE_PREFIX, LINES_SEPARATOR,
 )
+from eagleosint.models import DorkResult
+from eagleosint.plugin import BaseProvider, ProviderCategory
 from eagleosint.session import HEADERS, session as _session
+
+logger = logging.getLogger(__name__)
 
 RESULTS_GODORKER_TXT = "result_godorker.txt"
 
+class GoDorkerProvider(BaseProvider):
+    name = "godorker"
+    version = "1.0.0"
+    description = "Google dorking search with result scraping"
+    category = ProviderCategory.UTILITY
 
-def godorker():
-    """Performs Google dorking and saves the results to a file."""
+    def execute(
+            self,
+            query: str,
+            num_results: int = 30,
+            on_result: Callable | None = None,
+    ) -> list[DorkResult]:
+        error = self.validate_query(query)
+        if error:
+            logger.warning("invalid query: %s", error)
+            return []
+
+        urls: list[str] = []
+        try:
+            for url in search(query, num_results=num_results, timeout=5):
+                urls.append(url)
+        except Exception as e:
+            logger.error("Google search error: %s", e)
+
+        results: list[DorkResult] = []
+        for url in urls:
+            title = self._fetch_title(url)
+            result = DorkResult(query=query, url=url, title=title)
+            results.append(result)
+            if on_result:
+                on_result(result)
+
+        return results
+
+    def _fetch_title(self, url: str) -> str | None:
+        """Fetch the page title for a URL."""
+        try:
+            resp = _session.get(url, headers=HEADERS, timeout=10)
+            resp.raise_for_status()
+            doc = fromstring(resp.content)
+            return doc.findtext(".//title")
+        except (requests.exceptions.RequestException, TypeError):
+            logger.debug("could not fetch title for %s", url)
+            return None
+
+
+# ------------------------------------------------------------------
+# Interactive CLI wrapper
+# ------------------------------------------------------------------
+
+def godorker() -> list[DorkResult]:
+    """Interactive CLI wrapper — prompts for dork query, prints results."""
     dork_query = input(
         f"{SPACE_PREFIX}{BLUE}>{WHITE} enter dork (inurl/intext/etc):{BLUE} "
     ).lower()
     if not dork_query:
-        return
-    print(WHITE + LINES_SEPARATOR)
-    urls_found = []
-    try:
-        for result_url in search(dork_query, num_results=30, timeout=5):
-            urls_found.append(result_url)
-    except Exception as e_search:
-        print(f"{RED}Error during Google search: {e_search}{WHITE}")
+        return []
 
-    with open(RESULTS_GODORKER_TXT, "w", encoding="utf-8") as dork_file:
-        dork_file.write(f"# Dork: {dork_query}\n\n")
-        for result_url in urls_found:
-            try:
-                req = _session.get(result_url, headers=HEADERS, timeout=10)
-                req.raise_for_status()
-                res_content = fromstring(req.content)
-                title_text = res_content.findtext(".//title")
-                if title_text:
-                    wrapper = textwrap.TextWrapper(width=47)
-                    dedented_text = textwrap.dedent(text=title_text)
-                    original_text = wrapper.fill(text=dedented_text)
-                    shortened_text = textwrap.shorten(text=original_text, width=47)
-                    formatted_title = wrapper.fill(text=shortened_text)
-                    dork_file.write(f"{result_url}\n")
-                    print(
-                        f"{SPACE_PREFIX}{BG_BLUE} FOUND {WHITE} {formatted_title}\n"
-                        f"{SPACE_PREFIX}{DARK_GRAY}{result_url}{WHITE}"
-                    )
-            except requests.exceptions.HTTPError as http_err_dork:
-                print(f"{RED}HTTP error accessing {result_url}: {http_err_dork}{WHITE}")
-            except requests.exceptions.RequestException as req_err_dork:
-                print(f"{RED}Request error accessing {result_url}: {req_err_dork}{WHITE}")
-            except TypeError:
-                print(f"{YELLOW}Could not parse title for {result_url}{WHITE}")
-            except KeyboardInterrupt:
-                print(f"{RED}Dorking aborted by user.{WHITE}")
-                break
+    print(WHITE + LINES_SEPARATOR)
+
+    output_fh = open(RESULTS_GODORKER_TXT, "w", encoding="utf-8")
+    output_fh.write(f"# Dork: {dork_query}\n\n")
+
+    def _on_result(result: DorkResult) -> None:
+        if result.title:
+            wrapper = textwrap.TextWrapper(width=47)
+            shortened = textwrap.shorten(text=result.title, width=47)
+            formatted = wrapper.fill(text=shortened)
+            print(
+                f"{SPACE_PREFIX}{BG_BLUE} FOUND {WHITE} {formatted}\n"
+                f"{SPACE_PREFIX}{DARK_GRAY}{result.url}{WHITE}"
+            )
+        output_fh.write(f"{result.url}\n")
+
+    try:
+        provider = GoDorkerProvider()
+        results = provider.execute(dork_query, on_result=_on_result)
+    except KeyboardInterrupt:
+        print(f"{RED}Dorking aborted by user.{WHITE}")
+        results = []
+    finally:
+        output_fh.close()
+
     print(WHITE + LINES_SEPARATOR)
     print(
-        f"{SPACE_PREFIX}{BLUE}>{WHITE} {str(len(urls_found))} retrieved as: "
+        f"{SPACE_PREFIX}{BLUE}>{WHITE} {len(results)} retrieved as: "
         f"{YELLOW}{RESULTS_GODORKER_TXT}"
     )
     getpass(SPACE_PREFIX + "press enter for back to previous menu ")
+    return results

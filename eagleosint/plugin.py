@@ -2,7 +2,10 @@
 BaseProvider ABC and ProviderCategory Enum
 
 Every provider plugin must subclass BaseProvider and implement execute().
-Existing CLI are not yet migrated -- this is the target interface.
+Migrated: GitHubProvider, BitlyProvider, PhoneInfoProvider,
+          IPLocationProvider, DomainInfoProvider, MailFinderProvider,
+          UserReconProvider, GoDorkerProvider.
+Pending:  Facebook (deprecated API — isolate/remove), TempMail (polling pattern).
 """
 
 from __future__ import annotations
