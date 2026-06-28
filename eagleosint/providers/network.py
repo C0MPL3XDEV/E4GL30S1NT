@@ -127,7 +127,7 @@ def iplocation() -> IPResult | None:
     ip_address = input(f"{SPACE_PREFIX}{BLUE}>{WHITE} enter IP:{BLUE} ").strip()
 
     provider = IPLocationProvider()
-    results = provider.execute(ip_address)
+    results = provider.run(ip_address)
 
     print(WHITE + LINES_SEPARATOR)
     if not results:
@@ -154,7 +154,7 @@ def infoga(option: str) -> DomainResult | None:
         return None
 
     provider = DomainInfoProvider()
-    results = provider.execute(target, query_type=option)
+    results = provider.run(target, query_type=option)
 
     print(WHITE + LINES_SEPARATOR)
     if not results:

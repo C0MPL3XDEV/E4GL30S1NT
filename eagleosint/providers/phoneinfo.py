@@ -81,7 +81,7 @@ def phoneinfo() -> PhoneResult | None:
         save_config()
 
     provider = PhoneInfoProvider()
-    results = provider.execute(phone_number, api_key=api_key)
+    results = provider.run(phone_number, api_key=api_key)
 
     print(WHITE + LINES_SEPARATOR)
     if not results:

@@ -66,7 +66,7 @@ def bypass_bitly() -> URLExpansion | None:
     ).strip()
 
     provider = BitlyProvider()
-    results = provider.execute(bitly_url)
+    results = provider.run(bitly_url)
 
     if not results:
         print(f"{RED}No results for '{bitly_url}'.{WHITE}")

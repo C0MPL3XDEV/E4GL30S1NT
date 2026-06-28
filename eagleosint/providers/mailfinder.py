@@ -184,7 +184,7 @@ def mailfinder() -> list[EmailResult]:
 
     try:
         provider = MailFinderProvider()
-        results = provider.execute(
+        results = provider.run(
             full_name, api_key=api_key, on_result=_on_result
         )
     except KeyboardInterrupt:

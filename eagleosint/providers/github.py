@@ -76,7 +76,7 @@ def github_lookup() -> GitHubProfile | None:
     print(WHITE)
 
     provider = GithubProvider()
-    results = provider.execute(github_user)
+    results = provider.run(github_user)
 
     if not results:
         print(f"{RED}No results for '{github_user}'.{WHITE}")

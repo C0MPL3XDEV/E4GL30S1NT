@@ -98,7 +98,7 @@ def godorker() -> list[DorkResult]:
 
     try:
         provider = GoDorkerProvider()
-        results = provider.execute(dork_query, on_result=_on_result)
+        results = provider.run(dork_query, on_result=_on_result)
     except KeyboardInterrupt:
         print(f"{RED}Dorking aborted by user.{WHITE}")
         results = []
