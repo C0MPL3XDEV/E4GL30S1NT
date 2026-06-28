@@ -1,0 +1,284 @@
+platforms:
+  - name: facebook
+    url_template: "https://facebook.com/{}"
+    category: social
+
+  - name: instagram
+    url_template: "https://instagram.com/{}"
+    category: social
+
+  - name: twitter
+    url_template: "https://x.com/{}"
+    category: social
+
+  - name: youtube
+    url_template: "https://youtube.com/{}"
+    category: social
+
+  - name: vimeo
+    url_template: "https://vimeo.com/{}"
+    category: video
+
+  - name: github
+    url_template: "https://github.com/{}"
+    category: development
+
+  - name: plus.google
+    url_template: "https://plus.google.com/{}"
+    category: social
+
+  - name: pinterest
+    url_template: "https://pinterest.com/{}"
+    category: social
+
+  - name: flickr
+    url_template: "https://flickr.com/people/{}"
+    category: social
+
+  - name: vk
+    url_template: "https://vk.com/{}"
+    category: social
+
+  - name: about.me
+    url_template: "https://about.me/{}"
+    category: personal
+
+  - name: disqus
+    url_template: "https://disqus.com/{}"
+    category: social
+
+  - name: bitbucket
+    url_template: "https://bitbucket.org/{}"
+    category: development
+
+  - name: flipboard
+    url_template: "https://flipboard.com/@{}"
+    category: news
+
+  - name: medium
+    url_template: "https://medium.com/@{}"
+    category: blog
+
+  - name: hackerone
+    url_template: "https://hackerone.com/{}"
+    category: security
+
+  - name: keybase
+    url_template: "https://keybase.io/{}"
+    category: security
+
+  - name: buzzfeed
+    url_template: "https://buzzfeed.com/{}"
+    category: news
+
+  - name: slideshare
+    url_template: "https://slideshare.net/{}"
+    category: professional
+
+  - name: mixcloud
+    url_template: "https://mixcloud.com/{}"
+    category: music
+
+  - name: soundcloud
+    url_template: "https://soundcloud.com/{}"
+    category: music
+
+  - name: badoo
+    url_template: "https://badoo.com/en/{}"
+    category: dating
+
+  - name: imgur
+    url_template: "https://imgur.com/user/{}"
+    category: media
+
+  - name: spotify
+    url_template: "https://open.spotify.com/user/{}"
+    category: music
+
+  - name: pastebin
+    url_template: "https://pastebin.com/u/{}"
+    category: development
+
+  - name: wattpad
+    url_template: "https://wattpad.com/user/{}"
+    category: blog
+
+  - name: canva
+    url_template: "https://canva.com/{}"
+    category: design
+
+  - name: codecademy
+    url_template: "https://codecademy.com/{}"
+    category: development
+
+  - name: lastfm
+    url_template: "https://last.fm/user/{}"
+    category: music
+
+  - name: blipfm
+    url_template: "https://blip.fm/{}"
+    category: music
+
+  - name: dribbble
+    url_template: "https://dribbble.com/{}"
+    category: design
+
+  - name: gravatar
+    url_template: "https://en.gravatar.com/{}"
+    category: personal
+
+  - name: foursquare
+    url_template: "https://foursquare.com/{}"
+    category: social
+
+  - name: creativemarket
+    url_template: "https://creativemarket.com/{}"
+    category: design
+
+  - name: ello
+    url_template: "https://ello.co/{}"
+    category: social
+
+  - name: cashapp
+    url_template: "https://cash.me/{}"
+    category: finance
+
+  - name: angellist
+    url_template: "https://angel.co/{}"
+    category: professional
+
+  - name: 500px
+    url_template: "https://500px.com/{}"
+    category: media
+
+  - name: houzz
+    url_template: "https://houzz.com/user/{}"
+    category: design
+
+  - name: tripadvisor
+    url_template: "https://tripadvisor.com/members/{}"
+    category: travel
+
+  - name: kongregate
+    url_template: "https://kongregate.com/accounts/{}"
+    category: gaming
+
+  - name: blogspot
+    url_template: "https://{}.blogspot.com/"
+    category: blog
+
+  - name: tumblr
+    url_template: "https://{}.tumblr.com/"
+    category: blog
+
+  - name: wordpress
+    url_template: "https://{}.wordpress.com/"
+    category: blog
+
+  - name: deviantart
+    url_template: "https://{}.devianart.com/"
+    category: design
+
+  - name: slack
+    url_template: "https://{}.slack.com/"
+    category: professional
+
+  - name: livejournal
+    url_template: "https://{}.livejournal.com/"
+    category: blog
+
+  - name: newgrounds
+    url_template: "https://{}.newgrounds.com/"
+    category: gaming
+
+  - name: hubpages
+    url_template: "https://{}.hubpages.com"
+    category: blog
+
+  - name: contently
+    url_template: "https://{}.contently.com"
+    category: professional
+
+  - name: steam
+    url_template: "https://steamcommunity.com/id/{}"
+    category: gaming
+
+  - name: wikipedia
+    url_template: "https://www.wikipedia.org/wiki/User:{}"
+    category: reference
+
+  - name: freelancer
+    url_template: "https://www.freelancer.com/u/{}"
+    category: professional
+
+  - name: dailymotion
+    url_template: "https://www.dailymotion.com/{}"
+    category: video
+
+  - name: etsy
+    url_template: "https://www.etsy.com/shop/{}"
+    category: ecommerce
+
+  - name: scribd
+    url_template: "https://www.scribd.com/{}"
+    category: media
+
+  - name: patreon
+    url_template: "https://www.patreon.com/{}"
+    category: finance
+
+  - name: behance
+    url_template: "https://www.behance.net/{}"
+    category: design
+
+  - name: goodreads
+    url_template: "https://www.goodreads.com/{}"
+    category: media
+
+  - name: gumroad
+    url_template: "https://www.gumroad.com/{}"
+    category: ecommerce
+
+  - name: instructables
+    url_template: "https://www.instructables.com/member/{}"
+    category: diy
+
+  - name: codementor
+    url_template: "https://www.codementor.io/{}"
+    category: development
+
+  - name: reverbnation
+    url_template: "https://www.reverbnation.com/{}"
+    category: music
+
+  - name: designspiration
+    url_template: "https://www.designspiration.net/{}"
+    category: design
+
+  - name: bandcamp
+    url_template: "https://www.bandcamp.com/{}"
+    category: music
+
+  - name: colourlovers
+    url_template: "https://www.colourlovers.com/love/{}"
+    category: design
+
+  - name: ifttt
+    url_template: "https://www.ifttt.com/p/{}"
+    category: tech
+
+  - name: trakt
+    url_template: "https://www.trakt.tv/users/{}"
+    category: media
+
+  - name: okcupid
+    url_template: "https://www.okcupid.com/profile/{}"
+    category: dating
+
+  - name: skyscanner
+    url_template: "https://www.trip.skyscanner.com/user/{}"
+    category: travel
+
+  - name: zoneh
+    url_template: "http://www.zone-h.org/archive/notifier={}"
+    category: security

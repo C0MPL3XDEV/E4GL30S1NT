@@ -15,54 +15,16 @@ from eagleosint.display import (
 from eagleosint.models import AccountHit, AccountStatus
 from eagleosint.plugin import BaseProvider, ProviderCategory
 from eagleosint.session import HEADERS, session as _session
+from eagleosint.registry import get_url_templates
 
 logger = logging.getLogger(__name__)
 
-PLATFORM_URLS = [
-    "https://facebook.com/{}", "https://instagram.com/{}",
-    "https://twitter.com/{}", "https://youtube.com/{}",
-    "https://vimeo.com/{}", "https://github.com/{}",
-    "https://plus.google.com/{}", "https://pinterest.com/{}",
-    "https://flickr.com/people/{}", "https://vk.com/{}",
-    "https://about.me/{}", "https://disqus.com/{}",
-    "https://bitbucket.org/{}", "https://flipboard.com/@{}",
-    "https://medium.com/@{}", "https://hackerone.com/{}",
-    "https://keybase.io/{}", "https://buzzfeed.com/{}",
-    "https://slideshare.net/{}", "https://mixcloud.com/{}",
-    "https://soundcloud.com/{}", "https://badoo.com/en/{}",
-    "https://imgur.com/user/{}", "https://open.spotify.com/user/{}",
-    "https://pastebin.com/u/{}", "https://wattpad.com/user/{}",
-    "https://canva.com/{}", "https://codecademy.com/{}",
-    "https://last.fm/user/{}", "https://blip.fm/{}",
-    "https://dribbble.com/{}", "https://en.gravatar.com/{}",
-    "https://foursquare.com/{}", "https://creativemarket.com/{}",
-    "https://ello.co/{}", "https://cash.me/{}", "https://angel.co/{}",
-    "https://500px.com/{}", "https://houzz.com/user/{}",
-    "https://tripadvisor.com/members/{}",
-    "https://kongregate.com/accounts/{}", "https://{}.blogspot.com/",
-    "https://{}.tumblr.com/", "https://{}.wordpress.com/",
-    "https://{}.devianart.com/", "https://{}.slack.com/",
-    "https://{}.livejournal.com/", "https://{}.newgrounds.com/",
-    "https://{}.hubpages.com", "https://{}.contently.com",
-    "https://steamcommunity.com/id/{}",
-    "https://www.wikipedia.org/wiki/User:{}",
-    "https://www.freelancer.com/u/{}", "https://www.dailymotion.com/{}",
-    "https://www.etsy.com/shop/{}", "https://www.scribd.com/{}",
-    "https://www.patreon.com/{}", "https://www.behance.net/{}",
-    "https://www.goodreads.com/{}", "https://www.gumroad.com/{}",
-    "https://www.instructables.com/member/{}",
-    "https://www.codementor.io/{}", "https://www.reverbnation.com/{}",
-    "https://www.designspiration.net/{}", "https://www.bandcamp.com/{}",
-    "https://www.colourlovers.com/love/{}", "https://www.ifttt.com/p/{}",
-    "https://www.trakt.tv/users/{}", "https://www.okcupid.com/profile/{}",
-    "https://www.trip.skyscanner.com/user/{}",
-    "http://www.zone-h.org/archive/notifier={}",
-]
+PLATFORM_URLS = get_url_templates()
 
 class UserReconProvider(BaseProvider):
     name = "userrecon"
     version = "1.0.0"
-    description = "Username reconnaissance across 71 platforms"
+    description = "Username reconnaissance across multiple platforms"
     category = ProviderCategory.USERNAME
 
     def _check_platform(self, url_template: str, username: str) -> AccountHit:
