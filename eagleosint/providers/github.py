@@ -84,7 +84,7 @@ def github_lookup() -> GitHubProfile | None:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return None
 
-    profile = results[0]
+    profile: GitHubProfile = results[0]  # type: ignore[assignment]
 
     table_data = [[str(key), str(value)] for key, value in profile.raw.items()]
     for line_item in tabulate(

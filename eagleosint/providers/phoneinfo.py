@@ -90,7 +90,7 @@ def phoneinfo() -> PhoneResult | None:
         getpass(SPACE_PREFIX + "press enter for back to previous menu ")
         return None
 
-    result = results[0]
+    result: PhoneResult = results[0]  # type: ignore[assignment]
     if result.raw:
         for info_key, info_value in result.raw.items():
             print(

@@ -12,7 +12,7 @@ from __future__ import annotations
 import logging
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from eagleosint.models import ProviderResult
 
@@ -59,7 +59,7 @@ class BaseProvider(ABC):
     # ----------------------------------------------------------
 
     @abstractmethod
-    def execute(self, query: str) -> list[ProviderResult]:
+    def execute(self, query: str, **kwargs: Any) -> list[ProviderResult]:
         """
         Run the provider against a query string.
         Return a list of ProviderResult subclass instances.
@@ -70,7 +70,7 @@ class BaseProvider(ABC):
     # Audited entry point
     # ----------------------------------------------------------
 
-    def run(self, query: str, **kwargs) -> list[ProviderResult]:
+    def run(self, query: str, **kwargs: Any) -> list[ProviderResult]:
         """Execute the provider with automatic audit logging.
 
         This is the recommended way to call a provider. It wraps

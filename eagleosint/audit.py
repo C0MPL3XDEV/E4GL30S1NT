@@ -47,7 +47,7 @@ def audit_log(
         success: Whether the query succeeded.
         extra: Optional additional metadata.
     """
-    entry = {
+    entry: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "session_id": SESSION_ID,
         "event": event,
