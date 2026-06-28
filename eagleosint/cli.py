@@ -21,6 +21,7 @@ from eagleosint.providers.network import infoga, iplocation
 from eagleosint.providers.phoneinfo import phoneinfo
 from eagleosint.providers.tempmail import temp_mail_gen
 from eagleosint.providers.userrecon import userrecon
+from eagleosint.providers.metadata import metadata_extract
 
 
 def menu():
@@ -46,6 +47,7 @@ def menu():
         {WHITE}{BLUE}  13{WHITE} Bitly Bypass  {DARK_GRAY} Bypass all bitly urls
         {WHITE}{BLUE}  14{WHITE} Github Lookup {DARK_GRAY} Dump GitHub information
         {WHITE}{BLUE}  15{WHITE} TempMail {DARK_GRAY}      Generate Temp Mail and Mail Box
+        {WHITE}{BLUE}  16{WHITE} Metadata  {DARK_GRAY}      Extract metadata from files
         {WHITE}{BLUE}  00{WHITE} Exit          {DARK_GRAY} bye bye ):
         """
     )
@@ -94,6 +96,8 @@ def mainmenu():
                     github_lookup()
                 elif cmd in ("15"):
                     temp_mail_gen()
+                elif cmd in ("16"):
+                    metadata_extract()
             else:
                 continue
         except KeyboardInterrupt:
@@ -491,6 +495,27 @@ def cmd_github(output: str | None, output_file: str | None, save_to: str | None,
     """GitHub user profile lookup."""
     print(LOGO)
     result = github_lookup()
+    if output and result:
+        _write_output([result], output, output_file, show_pii=show_pii)
+    if save_to and result:
+        from eagleosint.storage import save_result
+        save_result(save_to, result)
+        print(f"{BLUE}>{WHITE} result saved to investigation {save_to}")
+
+@main.command("metadata")
+@click.option("--output", "-o", type=click.Choice(["json", "csv"]), default=None,
+              help="Emit structured output.")
+@click.option("--output-file", "-f", "output_file", type=click.Path(), default=None,
+              help="Write output to this file path.")
+@click.option("--save-to", "save_to", default=None,
+              help="Save result to this investigation ID.")
+@click.option("--show-pii", is_flag=True, default=False,
+              help="Show unmasked PII in output.")
+
+def cmd_metadata(output: str | None, output_file: str | None, save_to: str | None, show_pii: bool) -> None:
+    """Extract metadata from images and PDF documents."""
+    print(LOGO)
+    result = metadata_extract()
     if output and result:
         _write_output([result], output, output_file, show_pii=show_pii)
     if save_to and result:

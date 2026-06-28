@@ -127,6 +127,29 @@ class URLExpansion(ProviderResult):
     original_url: str
 
 
+class MetadataResult(ProviderResult):
+    """Metadata extracted from an image or document."""
+    source: str = "metadata"
+    file_path: str
+    file_type: str
+    file_size: int | None = None
+    author: str | None = None
+    software: str | None = None
+    created: str | None = None
+    modified: str | None = None
+    title: str | None = None
+    # image-specific
+    device_make: str | None = None
+    device_model: str | None = None
+    gps_latitude: float | None = None
+    gps_longitude: float | None = None
+    image_width: int | None = None
+    image_height: int | None = None
+    # pdf-specific
+    page_count: int | None = None
+    producer: str | None = None
+    extra: dict[str, Any] = Field(default_factory=dict)
+
 # ----------------------------------------------------------------------
 # Investigation container (in-memory for now; persistence comes later)
 # ----------------------------------------------------------------------
